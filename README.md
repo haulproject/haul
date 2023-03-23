@@ -14,7 +14,7 @@ Make sure the server is up
 
 ### optional - local cli
 
-Haul is accessed mainly through it's API.
+Haul is accessed mainly through its API.
 
 Install the cli locally.
 
