@@ -39,6 +39,21 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.haul.yaml)")
+
+	// api.protocol
+	rootCmd.PersistentFlags().String("api-protocol", "http", "Remote api protocol (http/https) (config: 'api.protocol')")
+	viper.BindPFlag("api.protocol", rootCmd.PersistentFlags().Lookup("api-protocol"))
+
+	// api.host
+	rootCmd.PersistentFlags().String("api-host", "localhost", "Remote api host (ip or dns) (config: 'api.host')")
+	viper.BindPFlag("api.host", rootCmd.PersistentFlags().Lookup("api-host"))
+
+	// api.port
+	rootCmd.PersistentFlags().Int("api-port", 1315, "Remote api port (config: 'api.port')")
+	viper.BindPFlag("api.port", rootCmd.PersistentFlags().Lookup("api-port"))
+
+	// api.key
+	//TODO
 }
 
 // initConfig reads in config file and ENV variables if set.
