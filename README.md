@@ -22,7 +22,7 @@ Install the cli locally.
 
 Then, add a config locally to `$HOME/.haul.yaml` from the `example/haul.yaml`, or specify a different config location with the `--config` flag. 
 
-*Note that if you installed the server from docker-compose without any modifications, this should be necessary to access the server on the same host.*
+*Note that if you installed the server from docker-compose without any modifications, this should be unnecessary to access the server on the same host.*
 
 Once that is done, make sure you can access the server with a healthcheck
 
