@@ -6,11 +6,11 @@ Inventory management system for patchwork components and assets.
 
 Deploy mongodb and haul server
 
-`docker-compose up -d --build`
+`$ docker-compose up -d --build`
 
 Make sure the server is up
 
-`docker-compose logs haul`
+`$ docker-compose logs haul`
 
 ### optional - local cli
 
@@ -18,7 +18,7 @@ Haul is accessed mainly through it's API.
 
 Install the cli locally.
 
-`go install`
+`$ go install`
 
 Then, add a config locally to `$HOME/.haul.yaml` from the `example/haul.yaml`, or specify a different config location with the `--config` flag. 
 
@@ -26,10 +26,10 @@ Then, add a config locally to `$HOME/.haul.yaml` from the `example/haul.yaml`, o
 
 Once that is done, make sure you can access the server with a healthcheck
 
-`haul ping`
+`$ haul ping`
 
 You can then list all api routes
 
-`haul api`
+`$ haul api`
 
-See `haul help` for more options
+See `$ haul help` for more options
