@@ -1,0 +1,26 @@
+services:
+
+  mongo:
+    image: docker.io/library/mongo:6.0.5
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: haul
+      MONGO_INITDB_ROOT_PASSWORD: haul
+    volumes:
+      - 'data-db:/data/db'
+  haul:
+    build: .
+    image: 'haulproject/haul:latest'
+    restart: unless-stopped
+    depends_on: 
+      - 'mongo'
+    ports:
+      - "1315:1315"
+    volumes:
+      - 'config:/app/config'
+    command: ["haul", "server", "--config", "/app/config/haul.yaml"]
+
+volumes:
+  config:
+  data-db:
+
