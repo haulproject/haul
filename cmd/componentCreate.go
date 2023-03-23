@@ -13,21 +13,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// createComponentCmd represents the createComponent command
-var createComponentCmd = &cobra.Command{
-	Use:   "component",
-	Short: "Components are things that can be assembled",
-	Long: `Components are things that can be assembled to create servers, 
-workstations, etc.
-
-Examples: 
-
-  - a RAM stick
-  - a CPU
-  - a set of speakers
-  - a monitor
-  - a keyboard
-  - ...`,
+// componentCreateCmd represents the componentCreate command
+var componentCreateCmd = &cobra.Command{
+	Use:   "create",
+	Short: "Create a component in the database",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			log.Fatal("Must specify at least 1 component to create")
@@ -62,5 +51,5 @@ Examples:
 }
 
 func init() {
-	createCmd.AddCommand(createComponentCmd)
+	componentCmd.AddCommand(componentCreateCmd)
 }
