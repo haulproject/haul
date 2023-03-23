@@ -50,7 +50,7 @@ var serverCmd = &cobra.Command{
 
 		// Ping
 		// Send a ping to confirm a successful connection
-		log.Println("[info] Trying to ping database...")
+		log.Println("[info] Trying to ping database...")
 		var result bson.M
 		if err = mongoClient.Database("admin").RunCommand(ctx, bson.D{{Key: "ping", Value: 1}}).Decode(&result); err != nil {
 			log.Fatal(err)
