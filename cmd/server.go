@@ -11,11 +11,11 @@ import (
 	"sort"
 	"time"
 
+	"codeberg.org/haulproject/haul/db"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -27,6 +27,8 @@ var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: "Run the haul server",
 	Run: func(cmd *cobra.Command, args []string) {
+
+		mongoUri := viper.GetString("mongo.uri")
 		// MongoDB connection
 
 		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -34,7 +36,7 @@ var serverCmd = &cobra.Command{
 
 		// Use the SetServerAPIOptions() method to set the Stable API version to 1
 		serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-		opts := options.Client().ApplyURI(viper.GetString("mongo.uri")).SetServerAPIOptions(serverAPI)
+		opts := options.Client().ApplyURI(mongoUri).SetServerAPIOptions(serverAPI)
 
 		// Create a new client and connect to the server
 		mongoClient, err := mongo.Connect(ctx, opts)
@@ -51,8 +53,9 @@ var serverCmd = &cobra.Command{
 		// Ping
 		// Send a ping to confirm a successful connection
 		log.Println("[info] Trying to ping database...")
-		var result bson.M
-		if err = mongoClient.Database("admin").RunCommand(ctx, bson.D{{Key: "ping", Value: 1}}).Decode(&result); err != nil {
+
+		_, err = db.Ping(mongoUri)
+		if err != nil {
 			log.Fatal(err)
 		}
 
@@ -99,12 +102,18 @@ func handleV1(c echo.Context) error {
 }
 
 func handleV1Healthcheck(c echo.Context) error {
+	// Vars
+
+	mongoUri := viper.GetString("mongo.uri")
+
+	// Execution
+
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	// Use the SetServerAPIOptions() method to set the Stable API version to 1
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(viper.GetString("mongo.uri")).SetServerAPIOptions(serverAPI)
+	opts := options.Client().ApplyURI(mongoUri).SetServerAPIOptions(serverAPI)
 
 	// Create a new client and connect to the server
 	client, err := mongo.Connect(ctx, opts)
@@ -119,13 +128,14 @@ func handleV1Healthcheck(c echo.Context) error {
 	}()
 
 	// Send a ping to confirm a successful connection
-	var result bson.M
-	if err := client.Database("admin").RunCommand(ctx, bson.D{{Key: "ping", Value: 1}}).Decode(&result); err != nil {
+	_, err = db.Ping(mongoUri)
+	if err != nil {
 		log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"status": "Internal server error",
 			"ping":   "not ok",
 		})
+
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
