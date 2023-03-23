@@ -2,6 +2,18 @@
 
 Inventory management system for patchwork components and assets.
 
+## prerequisites
+
+To build and deploy the server:
+
+- docker
+
+- docker-compose
+
+To build the client:
+
+- go
+
 ## procedure
 
 Deploy mongodb and haul server
