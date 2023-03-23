@@ -82,7 +82,7 @@ func init() {
 	rootCmd.AddCommand(serverCmd)
 
 	// mongo.uri
-	serverCmd.Flags().String("mongo-uri", "", "MondoDB connection URI (config: 'mongo.uri')")
+	serverCmd.Flags().String("mongo-uri", "mongodb://haul:haul@mongo:27017/", "MondoDB connection URI (config: 'mongo.uri')")
 	viper.BindPFlag("mongo.uri", serverCmd.Flags().Lookup("mongo-uri"))
 
 	// server.port
