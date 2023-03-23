@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"sort"
@@ -73,8 +74,7 @@ var serverCmd = &cobra.Command{
 
 		// Ready
 
-		//e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", viper.GetInt("server.port"))))
-		e.Logger.Fatal(e.Start(":1315"))
+		e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", viper.GetInt("server.port"))))
 	},
 }
 
@@ -84,6 +84,10 @@ func init() {
 	// mongo.uri
 	serverCmd.Flags().String("mongo-uri", "", "MondoDB connection URI (config: 'mongo.uri')")
 	viper.BindPFlag("mongo.uri", serverCmd.Flags().Lookup("mongo-uri"))
+
+	// server.port
+	serverCmd.Flags().Int("server-port", 1315, "Server port to expose API (config: 'server.port')")
+	viper.BindPFlag("server.port", serverCmd.Flags().Lookup("server-port"))
 }
 
 // API Handlers
