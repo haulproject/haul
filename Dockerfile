@@ -1,4 +1,4 @@
-FROM golang:1.19.1 as build
+FROM golang:1.20.2 as build
 
 LABEL author="vlbeaudoin"
 
