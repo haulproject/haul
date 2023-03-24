@@ -10,6 +10,8 @@ ADD cmd/ cmd/
 
 ADD api/ api/
 
+ADD types/ types/
+
 ADD db/ db/
 
 RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o haul .
