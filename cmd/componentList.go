@@ -15,6 +15,7 @@ import (
 var componentListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "Prints values of all components",
+	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		result, err := api.Call(api.GET, "/v1/component")
 		if err != nil {
