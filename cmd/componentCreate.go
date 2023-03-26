@@ -18,16 +18,23 @@ import (
 
 // componentCreateCmd represents the componentCreate command
 var componentCreateCmd = &cobra.Command{
-	Use:   "create",
+	Use:   "create [COMPONENT]",
 	Short: "Create a component in the database",
-	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			log.Fatal("Must specify at least 1 component to create")
-		}
-		if len(args) > 1 {
-			log.Fatal("Can currently only insert 1 component at a time")
-		}
+	Long: `Create a component in the database, using the COMPONENT defined in args in JSON format.
 
+The "name" field must be non-blank, but its value can be any string. Examples of "name" include a description of the component, or something like a serial number, mac address, or other identifier. It currently does not need to be unique in the database.
+
+The "tags" field is non-mandatory. It can however be used to convey more detailed information about the component.`,
+
+	Example: `Create new 8gb RAM stick, with the "name" field used for a simple description
+
+    $ haul component create '{ "name": "Generic 8gb RAM", "tags": [ "manufacturer=generic", "type=ram", "size=8gb" ] }'
+
+Create a new set of speakers without any tags
+
+    $ haul component create '{ "name": "Speakers" }'`,
+	Args: cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
 		var components []types.Component
 
 		for _, arg := range args {
@@ -43,6 +50,10 @@ var componentCreateCmd = &cobra.Command{
 
 		}
 
+		if len(components) == 0 {
+			os.Exit(1)
+		}
+
 		_, err := json.Marshal(components)
 		if err != nil {
 			log.Fatal(err)
@@ -50,7 +61,7 @@ var componentCreateCmd = &cobra.Command{
 
 		for _, component := range components {
 			if component.Name == "" {
-				os.Stderr.WriteString("component.Name cannot be empty")
+				log.Fatal("component.Name cannot be empty")
 			}
 		}
 
@@ -59,6 +70,9 @@ var componentCreateCmd = &cobra.Command{
 		}
 
 		currentComponent, err := json.Marshal(components[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		endpoint := fmt.Sprintf("%s://%s:%d",
 			viper.GetString("api.protocol"),
