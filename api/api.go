@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	GET = "GET"
+	GET    = "GET"
+	DELETE = "DELETE"
 )
 
 func Call(method, route string) ([]byte, error) {
@@ -36,7 +37,29 @@ func Call(method, route string) ([]byte, error) {
 		}
 
 		return body, nil
-	}
+	case DELETE:
+		// Create client
+		client := &http.Client{}
 
-	return nil, errors.New(fmt.Sprintf("method must be 'GET', got '%s'", method))
+		// Create request
+		req, err := http.NewRequest("DELETE", request, nil)
+		if err != nil {
+			return nil, err
+		}
+
+		// Fetch Request
+		resp, err := client.Do(req)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+
+		// Read Response Body
+		respBody, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+		return respBody, nil
+	}
+	return nil, errors.New(fmt.Sprintf("method must be 'GET' or 'DELETE', got '%s'", method))
 }

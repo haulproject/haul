@@ -128,3 +128,37 @@ func ReadAll(collection string) ([]*bson.M, error) {
 
 	return components, nil
 }
+
+func DeleteFromID(collection string, id primitive.ObjectID) (*mongo.DeleteResult, error) {
+
+	// MongoDB connection
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	// Use the SetServerAPIOptions() method to set the Stable API version to 1
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI(viper.GetString("mongo.uri")).SetServerAPIOptions(serverAPI)
+
+	// Create a new client and connect to the server
+	client, err := mongo.Connect(ctx, opts)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			fmt.Fprintf(os.Stderr, "%s\n", err)
+		}
+	}()
+
+	filter := bson.D{primitive.E{Key: "_id", Value: id}}
+
+	result, err := client.Database("haul").Collection(collection).DeleteOne(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+
+}
