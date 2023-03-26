@@ -80,7 +80,6 @@ func ReadFromID(collection string, id primitive.ObjectID) (bson.M, error) {
 
 }
 
-// func ReadAll(collection string) ([]*types.Component, error) {
 func ReadAll(collection string) ([]*bson.M, error) {
 	// MongoDB connection
 
@@ -103,7 +102,6 @@ func ReadAll(collection string) ([]*bson.M, error) {
 		}
 	}()
 
-	//var components []*types.Component
 	var components []*bson.M
 
 	filter := bson.D{primitive.E{}}
@@ -115,7 +113,6 @@ func ReadAll(collection string) ([]*bson.M, error) {
 	}
 
 	for cursor.Next(ctx) {
-		//var component types.Component
 		var component bson.M
 		err := cursor.Decode(&component)
 		if err != nil {
