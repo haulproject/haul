@@ -83,6 +83,8 @@ var serverCmd = &cobra.Command{
 
 		e.GET("/v1/component/:component", handleV1ComponentRead)
 
+		e.DELETE("/v1/component/:component", handleV1ComponentDelete)
+
 		// Ready
 
 		e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", viper.GetInt("server.port"))))
@@ -242,4 +244,31 @@ func handleV1ComponentList(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, components)
+}
+
+func handleV1ComponentDelete(c echo.Context) error {
+	componentID, err := primitive.ObjectIDFromHex(c.Param("component"))
+	if err != nil {
+		if err == primitive.ErrInvalidHex {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": fmt.Sprintf("%s", err),
+			})
+		}
+
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": fmt.Sprintf("Internal server error"),
+		})
+	}
+
+	result, err := db.DeleteFromID("components", componentID)
+	if err != nil {
+		// other
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "Internal server error",
+		})
+	}
+
+	return c.JSON(http.StatusOK, result)
 }
