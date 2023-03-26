@@ -71,7 +71,10 @@ func ReadFromID(collection string, id primitive.ObjectID) (bson.M, error) {
 
 	filter := bson.D{primitive.E{Key: "_id", Value: id}}
 
-	client.Database("haul").Collection(collection).FindOne(ctx, filter).Decode(&result)
+	err = client.Database("haul").Collection(collection).FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		return result, err
+	}
 
 	return result, nil
 
