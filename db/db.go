@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -164,6 +165,28 @@ func DeleteFromID(collection string, id primitive.ObjectID) (*mongo.DeleteResult
 }
 
 func UpdateFromID(collection string, id primitive.ObjectID, data bson.D) (*mongo.UpdateResult, error) {
+	// Empty name validation
+
+	dataBytes, err := bson.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	var component map[string]map[string]interface{}
+
+	err = bson.Unmarshal(dataBytes, &component)
+	if err != nil {
+		return nil, err
+	}
+
+	// Validation for trying to empty the name
+	for _, element := range component {
+		for key, value := range element {
+			if key == "name" && value == "" {
+				return nil, errors.New("Cannot insert empty string into Component.Name")
+			}
+		}
+	}
 
 	// MongoDB connection
 
