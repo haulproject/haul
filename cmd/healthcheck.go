@@ -11,10 +11,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// pingCmd represents the ping command
-var pingCmd = &cobra.Command{
-	Use:   "ping",
-	Short: "Ping mongodb to test connection",
+// healthcheckCmd represents the healthcheck command
+var healthcheckCmd = &cobra.Command{
+	Use:   "healthcheck",
+	Short: "Print server's healthcheck to test connection",
 	Run: func(cmd *cobra.Command, args []string) {
 		result, err := api.Call(api.GET, "/v1/healthcheck")
 		if err != nil {
@@ -26,5 +26,5 @@ var pingCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(pingCmd)
+	rootCmd.AddCommand(healthcheckCmd)
 }
