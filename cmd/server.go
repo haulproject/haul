@@ -123,15 +123,15 @@ func handleV1Healthcheck(c echo.Context) error {
 	if err != nil {
 		log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"status": "Internal server error",
-			"ping":   "not ok",
+			"status":        "Internal server error",
+			"ping_database": "not ok",
 		})
 
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"status": "ok",
-		"ping":   "ok",
+		"status":        "ok",
+		"ping_database": "ok",
 	})
 }
 
