@@ -4,16 +4,14 @@ Copyright © 2023 The Haul Authors
 package cmd
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
+	"codeberg.org/haulproject/haul/api"
 	"codeberg.org/haulproject/haul/types"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // componentCreateCmd represents the componentCreate command
@@ -54,19 +52,10 @@ Create a new set of speakers without any tags
 			os.Exit(1)
 		}
 
-		_, err := json.Marshal(components)
-		if err != nil {
-			log.Fatal(err)
-		}
-
 		for _, component := range components {
 			if component.Name == "" {
 				log.Fatal("component.Name cannot be empty")
 			}
-		}
-
-		if err != nil {
-			log.Fatal(err)
 		}
 
 		currentComponent, err := json.Marshal(components[0])
@@ -74,25 +63,12 @@ Create a new set of speakers without any tags
 			log.Fatal(err)
 		}
 
-		endpoint := fmt.Sprintf("%s://%s:%d",
-			viper.GetString("api.protocol"),
-			viper.GetString("api.host"),
-			viper.GetInt("api.port"),
-		)
-		request := fmt.Sprintf("%s%s", endpoint, "/v1/component")
-
-		resp, err := http.Post(request, "application/json",
-			bytes.NewBuffer(currentComponent))
-
+		result, err := api.CallWithData(api.POST, "/v1/component", currentComponent)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		var res map[string]interface{}
-
-		json.NewDecoder(resp.Body).Decode(&res)
-
-		fmt.Println(res["message"])
+		fmt.Println(result)
 	},
 }
 
