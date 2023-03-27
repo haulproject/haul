@@ -319,8 +319,6 @@ func handleV1ComponentUpdate(c echo.Context) error {
 		})
 	}
 
-	fmt.Printf("%#v\n", component)
-
 	validated, err := types.ValidateFields(component, types.Component{})
 	if err != nil {
 		log.Println(err)

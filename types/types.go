@@ -2,7 +2,6 @@ package types
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -37,7 +36,6 @@ func ValidateFields(document bson.D, reference interface{}) (bson.D, error) {
 	var validFields bson.D
 
 	for _, value := range document {
-		fmt.Printf("%#v\n", value)
 		valid := false
 		for _, key := range keys {
 			if value.Key == key {
@@ -46,8 +44,6 @@ func ValidateFields(document bson.D, reference interface{}) (bson.D, error) {
 		}
 		if valid {
 			validFields = append(validFields, value)
-		} else {
-			fmt.Printf("Key [%s] is not a valid key in types.Component\n", value.Key)
 		}
 	}
 
