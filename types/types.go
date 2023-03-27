@@ -11,7 +11,7 @@ type Component struct {
 	Tags []string `json:"tags"`
 }
 
-// Taking a bson.D and a reference interface{}, returns a bson.D that only contains fields whose keys are also valid keys in the refenrece interface{}.
+// Taking a bson.D and a reference interface{}, returns a bson.D that only contains fields whose keys are also valid keys in the reference interface{}.
 // If an error is encountered, it is returned, and the returned bson.D will be nil.
 // If no error is encountered, the validated bson.D is returned, and the error will be nil.
 func ValidateFields(document bson.D, reference interface{}) (bson.D, error) {
