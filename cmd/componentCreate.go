@@ -16,8 +16,9 @@ import (
 
 // componentCreateCmd represents the componentCreate command
 var componentCreateCmd = &cobra.Command{
-	Use:   "create [COMPONENT]",
-	Short: "Create a component in the database",
+	Use:     "create COMPONENT",
+	Aliases: []string{"add", "insert"},
+	Short:   "Create a component in the database",
 	Long: `Create a component in the database, using the COMPONENT defined in args in JSON format.
 
 The "name" field must be non-blank, but its value can be any string. Examples of "name" include a description of the component, or something like a serial number, mac address, or other identifier. It currently does not need to be unique in the database.

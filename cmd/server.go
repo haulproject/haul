@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,6 +18,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -84,6 +86,8 @@ var serverCmd = &cobra.Command{
 		e.GET("/v1/component/:component", handleV1ComponentRead)
 
 		e.DELETE("/v1/component/:component", handleV1ComponentDelete)
+
+		e.PUT("/v1/component/:component", handleV1ComponentUpdate)
 
 		// Ready
 
@@ -189,7 +193,7 @@ func handleV1ComponentCreate(c echo.Context) error {
 
 	}
 
-	message := fmt.Sprintf("Inserted document with _id: %v\n", result.InsertedID)
+	message := fmt.Sprintf("Inserted document with _id: %v", result.InsertedID)
 
 	log.Println(message)
 
@@ -271,4 +275,92 @@ func handleV1ComponentDelete(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, result)
+}
+
+func handleV1ComponentUpdate(c echo.Context) error {
+	componentID, err := primitive.ObjectIDFromHex(c.Param("component"))
+	if err != nil {
+		if err == primitive.ErrInvalidHex {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": fmt.Sprintf("%s", err),
+			})
+		}
+
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": fmt.Sprintf("Internal server error"),
+		})
+	}
+
+	var data interface{}
+
+	err = c.Bind(&data)
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "Bad request",
+		})
+	}
+
+	marshalled, err := bson.Marshal(data)
+
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "Bad request",
+		})
+	}
+	var component bson.D
+	err = bson.Unmarshal(marshalled, &component)
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "Bad request",
+		})
+	}
+
+	validated, err := types.ValidateFields(component, types.Component{})
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "Error during fields validation",
+		})
+	}
+
+	if validated == nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "No valid data to use in update was found, nothing to do",
+		})
+	}
+
+	update := bson.D{
+		primitive.E{
+			Key: "$set", Value: validated,
+		},
+	}
+
+	result, err := db.UpdateFromID("components", componentID, update)
+	if err != nil || result == nil {
+		// ErrNoDocuments means that the filter did not match any documents in
+		// the collection.
+		if err == mongo.ErrNoDocuments {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": "No document with specified ObjectID",
+			})
+		}
+
+		// other
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": err.Error(),
+		})
+	}
+
+	message, err := json.Marshal(result)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "Error marshalling result",
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{"message": string(message)})
 }

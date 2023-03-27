@@ -13,9 +13,10 @@ import (
 
 // componentReadCmd represents the componentRead command
 var componentReadCmd = &cobra.Command{
-	Use:   "read [OBJECTID]",
-	Short: "Prints values of component identified by ObjectID in args",
-	Args:  cobra.ExactArgs(1),
+	Use:     "read OBJECT_ID",
+	Aliases: []string{"get"},
+	Short:   "Prints values of component identified by OBJECT_ID",
+	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		result, err := api.Call(api.GET, fmt.Sprintf("/v1/component/%s", args[0]))
 		if err != nil {

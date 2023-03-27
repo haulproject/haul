@@ -15,6 +15,7 @@ const (
 	GET    = "GET"
 	POST   = "POST"
 	DELETE = "DELETE"
+	PUT    = "PUT"
 )
 
 func Call(method, route string) ([]byte, error) {
@@ -88,7 +89,29 @@ func CallWithData(method, route string, data []byte) (string, error) {
 
 		json.NewDecoder(resp.Body).Decode(&res)
 
-		return fmt.Sprintf("%s", res["message"]), nil
+		return fmt.Sprintf("%s\n", res["message"]), nil
+	case PUT:
+		// initialize http client
+		client := &http.Client{}
+
+		// set the HTTP method, url, and request body
+		req, err := http.NewRequest(http.MethodPut, request, bytes.NewBuffer(data))
+		if err != nil {
+			return "", err
+		}
+
+		// set the request header Content-Type for json
+		req.Header.Set("Content-Type", "application/json; charset=utf-8")
+		resp, err := client.Do(req)
+		if err != nil {
+			return "", err
+		}
+
+		var res map[string]interface{}
+
+		json.NewDecoder(resp.Body).Decode(&res)
+		return fmt.Sprintf("%s\n", res["message"]), nil
 	}
-	return "", errors.New(fmt.Sprintf("method must be 'POST', got '%s'", method))
+
+	return "", errors.New(fmt.Sprintf("method must be 'POST' or 'PUT', got '%s'", method))
 }

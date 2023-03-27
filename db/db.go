@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -155,6 +156,62 @@ func DeleteFromID(collection string, id primitive.ObjectID) (*mongo.DeleteResult
 	filter := bson.D{primitive.E{Key: "_id", Value: id}}
 
 	result, err := client.Database("haul").Collection(collection).DeleteOne(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+
+}
+
+func UpdateFromID(collection string, id primitive.ObjectID, data bson.D) (*mongo.UpdateResult, error) {
+	// Empty name validation
+
+	dataBytes, err := bson.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	var component map[string]map[string]interface{}
+
+	err = bson.Unmarshal(dataBytes, &component)
+	if err != nil {
+		return nil, err
+	}
+
+	// Validation for trying to empty the name
+	for _, element := range component {
+		for key, value := range element {
+			if key == "name" && value == "" {
+				return nil, errors.New("Cannot insert empty string into Component.Name")
+			}
+		}
+	}
+
+	// MongoDB connection
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	// Use the SetServerAPIOptions() method to set the Stable API version to 1
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI(viper.GetString("mongo.uri")).SetServerAPIOptions(serverAPI)
+
+	// Create a new client and connect to the server
+	client, err := mongo.Connect(ctx, opts)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			fmt.Fprintf(os.Stderr, "%s\n", err)
+		}
+	}()
+
+	filter := bson.D{primitive.E{Key: "_id", Value: id}}
+
+	result, err := client.Database("haul").Collection(collection).UpdateOne(ctx, filter, data)
 	if err != nil {
 		return nil, err
 	}
