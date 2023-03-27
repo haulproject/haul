@@ -9,8 +9,9 @@ import (
 
 // componentCmd represents the component command
 var componentCmd = &cobra.Command{
-	Use:   "component",
-	Short: "Components are things that can be assembled",
+	Use:     "component",
+	Aliases: []string{"c"},
+	Short:   "Components are things that can be assembled",
 	Long: `Components are things that can be assembled to create servers, 
 workstations, etc.
 
