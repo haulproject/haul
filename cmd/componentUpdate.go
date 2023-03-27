@@ -32,46 +32,12 @@ To empty a field, provide the zero value for the field. Note that "name" cannot 
 	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		//var component bson.E
 		var component map[string]interface{}
 
 		err := json.Unmarshal([]byte(update), &component)
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		//fmt.Printf("%#v\n", component)
-
-		// Empty name check
-
-		/*
-			var componentObject types.Component
-
-			err = json.Unmarshal([]byte(update), &componentObject)
-			if err != nil {
-				log.Fatal(err)
-			}
-		*/
-		/* component.Name can actually be empty
-
-		if componentObject.Name == "" {
-			log.Fatal("Component.Name cannot be empty")
-		}
-		*/
-
-		//fmt.Printf("%#v\n", component.Value)
-		//fmt.Printf("%#v\n", component)
-		//fmt.Printf("%#v\n", componentObject)
-
-		//TODO validate keys
-		/*
-			validated, err := types.ValidateFields(bson.D{bson.E{Value: component}}, types.Component{})
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			fmt.Printf("%#v\n", validated.Map())
-		*/
 
 		currentComponent, err := json.Marshal(component)
 		if err != nil {

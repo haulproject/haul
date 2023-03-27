@@ -292,15 +292,6 @@ func handleV1ComponentUpdate(c echo.Context) error {
 		})
 	}
 
-	//TODO get this from request body
-	/*
-		component := bson.D{
-			primitive.E{Key: "name", Value: "updatedname"},
-			primitive.E{Key: "invalid", Value: "foobar"},
-			primitive.E{Key: "tags", Value: []string{"very", "updated"}},
-		}
-	*/
-
 	var data interface{}
 
 	err = c.Bind(&data)
@@ -344,7 +335,6 @@ func handleV1ComponentUpdate(c echo.Context) error {
 		},
 	}
 
-	// TODO add update fields
 	result, err := db.UpdateFromID("components", componentID, update)
 	if err != nil || result == nil {
 		// ErrNoDocuments means that the filter did not match any documents in

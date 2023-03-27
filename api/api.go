@@ -91,9 +91,9 @@ func CallWithData(method, route string, data []byte) (string, error) {
 
 		return fmt.Sprintf("%s\n", res["message"]), nil
 	case PUT:
-		//TODO
 		// initialize http client
 		client := &http.Client{}
+
 		// set the HTTP method, url, and request body
 		req, err := http.NewRequest(http.MethodPut, request, bytes.NewBuffer(data))
 		if err != nil {
