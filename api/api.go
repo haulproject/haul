@@ -1,6 +1,8 @@
 package api
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -11,6 +13,7 @@ import (
 
 const (
 	GET    = "GET"
+	POST   = "POST"
 	DELETE = "DELETE"
 )
 
@@ -62,4 +65,30 @@ func Call(method, route string) ([]byte, error) {
 		return respBody, nil
 	}
 	return nil, errors.New(fmt.Sprintf("method must be 'GET' or 'DELETE', got '%s'", method))
+}
+
+func CallWithData(method, route string, data []byte) (string, error) {
+	endpoint := fmt.Sprintf("%s://%s:%d",
+		viper.GetString("api.protocol"),
+		viper.GetString("api.host"),
+		viper.GetInt("api.port"),
+	)
+	request := fmt.Sprintf("%s%s", endpoint, route)
+	switch method {
+	case POST:
+
+		resp, err := http.Post(request, "application/json",
+			bytes.NewBuffer(data))
+
+		if err != nil {
+			return "", err
+		}
+
+		var res map[string]interface{}
+
+		json.NewDecoder(resp.Body).Decode(&res)
+
+		return fmt.Sprintf("%s", res["message"]), nil
+	}
+	return "", errors.New(fmt.Sprintf("method must be 'POST', got '%s'", method))
 }
