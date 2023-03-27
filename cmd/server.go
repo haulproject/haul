@@ -193,7 +193,7 @@ func handleV1ComponentCreate(c echo.Context) error {
 
 	}
 
-	message := fmt.Sprintf("Inserted document with _id: %v\n", result.InsertedID)
+	message := fmt.Sprintf("Inserted document with _id: %v", result.InsertedID)
 
 	log.Println(message)
 
