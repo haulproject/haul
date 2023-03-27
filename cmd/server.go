@@ -350,9 +350,8 @@ func handleV1ComponentUpdate(c echo.Context) error {
 		}
 
 		// other
-		log.Println(err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": "Internal server error",
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": err.Error(),
 		})
 	}
 
