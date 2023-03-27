@@ -329,6 +329,12 @@ func handleV1ComponentUpdate(c echo.Context) error {
 		})
 	}
 
+	if validated == nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "No valid data to use in update was found, nothing to do",
+		})
+	}
+
 	update := bson.D{
 		primitive.E{
 			Key: "$set", Value: validated,
