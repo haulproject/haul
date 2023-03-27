@@ -17,7 +17,7 @@ import (
 // componentCreateCmd represents the componentCreate command
 var componentCreateCmd = &cobra.Command{
 	Use:     "create COMPONENT",
-	Aliases: []string{"add", "insert"},
+	Aliases: []string{"add"},
 	Short:   "Create a component in the database",
 	Long: `Create a component in the database, using the COMPONENT defined in args in JSON format.
 
