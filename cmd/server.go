@@ -141,33 +141,8 @@ func handleV1Healthcheck(c echo.Context) error {
 
 // POST to insert a component
 func handleV1ComponentCreate(c echo.Context) error {
-	mongoUri := viper.GetString("mongo.uri")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	// Use the SetServerAPIOptions() method to set the Stable API version to 1
-	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(mongoUri).SetServerAPIOptions(serverAPI)
-
-	// Create a new client and connect to the server
-	client, err := mongo.Connect(ctx, opts)
-
-	if err != nil {
-		log.Println(err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": "Internal server error",
-		})
-	}
-	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			log.Fatal(err)
-		}
-	}()
-	coll := client.Database("haul").Collection("components")
-
 	var component types.Component
-	err = c.Bind(&component)
+	err := c.Bind(&component)
 	if err != nil {
 		log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
@@ -175,22 +150,11 @@ func handleV1ComponentCreate(c echo.Context) error {
 		})
 	}
 
-	//TODO Add JSON validation
-
-	if component.Name == "" {
-		log.Println("component.Name cannot be empty")
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": "component.Name cannot be empty",
-		})
-	}
-
-	result, err := coll.InsertOne(context.TODO(), component)
+	result, err := db.CreateComponent(component)
 	if err != nil {
-		log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": "Internal server error",
+			"message": err.Error(),
 		})
-
 	}
 
 	message := fmt.Sprintf("Inserted document with _id: %v", result.InsertedID)
