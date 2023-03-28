@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"codeberg.org/haulproject/haul/types"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -39,6 +40,41 @@ func Ping(uri string) (bson.M, error) {
 	var result bson.M
 
 	if err := client.Database("admin").RunCommand(ctx, bson.D{{Key: "ping", Value: 1}}).Decode(&result); err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func CreateComponent(component types.Component) (*mongo.InsertOneResult, error) {
+	mongoUri := viper.GetString("mongo.uri")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Use the SetServerAPIOptions() method to set the Stable API version to 1
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI(mongoUri).SetServerAPIOptions(serverAPI)
+
+	// Create a new client and connect to the server
+	client, err := mongo.Connect(ctx, opts)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			fmt.Fprintf(os.Stderr, "%s\n", err)
+		}
+	}()
+	coll := client.Database("haul").Collection("components")
+
+	if component.Name == "" {
+		return nil, errors.New("component.Name cannot be empty")
+	}
+
+	result, err := coll.InsertOne(context.TODO(), component)
+	if err != nil {
 		return nil, err
 	}
 
