@@ -69,19 +69,6 @@ func CreateComponent(component types.Component) (*mongo.InsertOneResult, error) 
 	}()
 	coll := client.Database("haul").Collection("components")
 
-	/*
-		var component types.Component
-		err = c.Bind(&component)
-		if err != nil {
-			log.Println(err)
-			return c.JSON(http.StatusBadRequest, map[string]string{
-				"message": "Bad request",
-			})
-		}
-	*/
-
-	//TODO Add JSON validation
-
 	if component.Name == "" {
 		return nil, errors.New("component.Name cannot be empty")
 	}
