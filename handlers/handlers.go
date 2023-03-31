@@ -168,6 +168,76 @@ func HandleV1ComponentRead(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
+func HandleV1AssemblyRead(c echo.Context) error {
+	assemblyID, err := primitive.ObjectIDFromHex(c.Param("assembly"))
+	if err != nil {
+		if err == primitive.ErrInvalidHex {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": fmt.Sprintf("%s", err),
+			})
+		}
+
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": fmt.Sprintf("Internal server error"),
+		})
+	}
+
+	result, err := db.ReadFromID("assemblies", assemblyID)
+	if err != nil || result == nil {
+		// ErrNoDocuments means that the filter did not match any documents in
+		// the collection.
+		if err == mongo.ErrNoDocuments {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": "No document with specified ObjectID",
+			})
+		}
+
+		// other
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "Internal server error",
+		})
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+
+func HandleV1KitRead(c echo.Context) error {
+	kitID, err := primitive.ObjectIDFromHex(c.Param("kit"))
+	if err != nil {
+		if err == primitive.ErrInvalidHex {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": fmt.Sprintf("%s", err),
+			})
+		}
+
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": fmt.Sprintf("Internal server error"),
+		})
+	}
+
+	result, err := db.ReadFromID("kits", kitID)
+	if err != nil || result == nil {
+		// ErrNoDocuments means that the filter did not match any documents in
+		// the collection.
+		if err == mongo.ErrNoDocuments {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": "No document with specified ObjectID",
+			})
+		}
+
+		// other
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "Internal server error",
+		})
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+
 // List
 
 func HandleV1ComponentList(c echo.Context) error {

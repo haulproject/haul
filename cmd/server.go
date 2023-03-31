@@ -88,6 +88,10 @@ var serverCmd = &cobra.Command{
 
 		e.GET("/v1/component/:component", handlers.HandleV1ComponentRead)
 
+		e.GET("/v1/assembly/:assembly", handlers.HandleV1AssemblyRead)
+
+		e.GET("/v1/kit/:kit", handlers.HandleV1KitRead)
+
 		// List
 
 		e.GET("/v1/component", handlers.HandleV1ComponentList)
