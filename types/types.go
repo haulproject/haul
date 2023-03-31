@@ -12,20 +12,20 @@ type Component struct {
 	Tags []string `json:"tags"`
 
 	// A component's Target should point to a kit's or assembly's ObjectID
-	Target primitive.ObjectID
+	Target primitive.ObjectID `json:"target"`
 }
 
 type Assembly struct {
-	Name string
-	Tags []string
+	Name string   `json:"name"`
+	Tags []string `json:"tags"`
 
 	// An assembly's Target should point to a kit's ObjectID
-	Target primitive.ObjectID
+	Target primitive.ObjectID `json:"target"`
 }
 
 type Kit struct {
-	Name string
-	Tags []string
+	Name string   `json:"name"`
+	Tags []string `json:"tags"`
 }
 
 /*
