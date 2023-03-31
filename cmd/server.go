@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"codeberg.org/haulproject/haul/db"
+	"codeberg.org/haulproject/haul/handlers"
 	"codeberg.org/haulproject/haul/types"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -85,9 +86,17 @@ var serverCmd = &cobra.Command{
 
 		e.GET("/v1/component", handleV1ComponentList)
 
+		e.GET("/v1/assembly", handlers.HandleV1AssemblyList)
+
+		e.GET("/v1/kit", handlers.HandleV1KitList)
+
 		// Create
 
 		e.POST("/v1/component", handleV1ComponentCreate)
+
+		e.POST("/v1/assembly", handlers.HandleV1AssemblyCreate)
+
+		e.POST("/v1/kit", handlers.HandleV1KitCreate)
 
 		// Read
 
