@@ -14,6 +14,8 @@ ADD types/ types/
 
 ADD db/ db/
 
+ADD handlers/ handlers/
+
 RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o haul .
 
 # Alpine
