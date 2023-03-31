@@ -75,17 +75,29 @@ var serverCmd = &cobra.Command{
 
 		// API Routes
 
+		// Misc
+
 		e.GET("/v1", handleV1)
 
 		e.GET("/v1/healthcheck", handleV1Healthcheck)
 
+		// List
+
 		e.GET("/v1/component", handleV1ComponentList)
+
+		// Create
 
 		e.POST("/v1/component", handleV1ComponentCreate)
 
+		// Read
+
 		e.GET("/v1/component/:component", handleV1ComponentRead)
 
+		// Delete
+
 		e.DELETE("/v1/component/:component", handleV1ComponentDelete)
+
+		// Update
 
 		e.PUT("/v1/component/:component", handleV1ComponentUpdate)
 

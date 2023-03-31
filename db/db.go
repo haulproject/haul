@@ -46,6 +46,8 @@ func Ping(uri string) (bson.M, error) {
 	return result, nil
 }
 
+// Create
+
 func CreateComponent(component types.Component) (*mongo.InsertOneResult, error) {
 	mongoUri := viper.GetString("mongo.uri")
 
@@ -151,6 +153,8 @@ func CreateKit(kit types.Kit) (*mongo.InsertOneResult, error) {
 	return result, nil
 }
 
+// Read
+
 func ReadFromID(collection string, id primitive.ObjectID) (bson.M, error) {
 
 	// MongoDB connection
@@ -236,6 +240,8 @@ func ReadAll(collection string) ([]*bson.M, error) {
 	return components, nil
 }
 
+// Delete
+
 func DeleteFromID(collection string, id primitive.ObjectID) (*mongo.DeleteResult, error) {
 
 	// MongoDB connection
@@ -269,6 +275,8 @@ func DeleteFromID(collection string, id primitive.ObjectID) (*mongo.DeleteResult
 	return result, nil
 
 }
+
+// Update
 
 func UpdateFromID(collection string, id primitive.ObjectID, data bson.D) (*mongo.UpdateResult, error) {
 	// Empty name validation
