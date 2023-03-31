@@ -104,6 +104,10 @@ var serverCmd = &cobra.Command{
 
 		e.PUT("/v1/component/:component", handlers.HandleV1ComponentUpdate)
 
+		e.PUT("/v1/assembly/:assembly", handlers.HandleV1AssemblyUpdate)
+
+		e.PUT("/v1/kit/:kit", handlers.HandleV1KitUpdate)
+
 		// Delete
 
 		e.DELETE("/v1/component/:component", handlers.HandleV1ComponentDelete)
