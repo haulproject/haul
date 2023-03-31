@@ -81,6 +81,76 @@ func CreateComponent(component types.Component) (*mongo.InsertOneResult, error) 
 	return result, nil
 }
 
+func CreateAssembly(assembly types.Assembly) (*mongo.InsertOneResult, error) {
+	mongoUri := viper.GetString("mongo.uri")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Use the SetServerAPIOptions() method to set the Stable API version to 1
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI(mongoUri).SetServerAPIOptions(serverAPI)
+
+	// Create a new client and connect to the server
+	client, err := mongo.Connect(ctx, opts)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			fmt.Fprintf(os.Stderr, "%s\n", err)
+		}
+	}()
+	coll := client.Database("haul").Collection("assemblies")
+
+	if assembly.Name == "" {
+		return nil, errors.New("assembly.Name cannot be empty")
+	}
+
+	result, err := coll.InsertOne(context.TODO(), assembly)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func CreateKit(kit types.Kit) (*mongo.InsertOneResult, error) {
+	mongoUri := viper.GetString("mongo.uri")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Use the SetServerAPIOptions() method to set the Stable API version to 1
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI(mongoUri).SetServerAPIOptions(serverAPI)
+
+	// Create a new client and connect to the server
+	client, err := mongo.Connect(ctx, opts)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			fmt.Fprintf(os.Stderr, "%s\n", err)
+		}
+	}()
+	coll := client.Database("haul").Collection("kits")
+
+	if kit.Name == "" {
+		return nil, errors.New("kit.Name cannot be empty")
+	}
+
+	result, err := coll.InsertOne(context.TODO(), kit)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
 func ReadFromID(collection string, id primitive.ObjectID) (bson.M, error) {
 
 	// MongoDB connection
