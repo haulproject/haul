@@ -570,3 +570,57 @@ func HandleV1ComponentDelete(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, result)
 }
+
+func HandleV1AssemblyDelete(c echo.Context) error {
+	assemblyID, err := primitive.ObjectIDFromHex(c.Param("assembly"))
+	if err != nil {
+		if err == primitive.ErrInvalidHex {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": fmt.Sprintf("%s", err),
+			})
+		}
+
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": fmt.Sprintf("Internal server error"),
+		})
+	}
+
+	result, err := db.DeleteFromID("assemblies", assemblyID)
+	if err != nil {
+		// other
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "Internal server error",
+		})
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+
+func HandleV1KitDelete(c echo.Context) error {
+	kitID, err := primitive.ObjectIDFromHex(c.Param("kit"))
+	if err != nil {
+		if err == primitive.ErrInvalidHex {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": fmt.Sprintf("%s", err),
+			})
+		}
+
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": fmt.Sprintf("Internal server error"),
+		})
+	}
+
+	result, err := db.DeleteFromID("kits", kitID)
+	if err != nil {
+		// other
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "Internal server error",
+		})
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
