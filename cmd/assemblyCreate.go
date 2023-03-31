@@ -18,7 +18,7 @@ import (
 var assemblyCreateCmd = &cobra.Command{
 	Use:     "create ASSEMBLY",
 	Aliases: []string{"add"},
-	Short:   "Create a assembly in the database",
+	Short:   "Create an assembly in the database",
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var assemblies []types.Assembly
