@@ -76,14 +76,6 @@ var serverCmd = &cobra.Command{
 
 		e.GET("/v1/healthcheck", handlers.HandleV1Healthcheck)
 
-		// List
-
-		e.GET("/v1/component", handlers.HandleV1ComponentList)
-
-		e.GET("/v1/assembly", handlers.HandleV1AssemblyList)
-
-		e.GET("/v1/kit", handlers.HandleV1KitList)
-
 		// Create
 
 		e.POST("/v1/component", handlers.HandleV1ComponentCreate)
@@ -96,13 +88,21 @@ var serverCmd = &cobra.Command{
 
 		e.GET("/v1/component/:component", handlers.HandleV1ComponentRead)
 
-		// Delete
+		// List
 
-		e.DELETE("/v1/component/:component", handlers.HandleV1ComponentDelete)
+		e.GET("/v1/component", handlers.HandleV1ComponentList)
+
+		e.GET("/v1/assembly", handlers.HandleV1AssemblyList)
+
+		e.GET("/v1/kit", handlers.HandleV1KitList)
 
 		// Update
 
 		e.PUT("/v1/component/:component", handlers.HandleV1ComponentUpdate)
+
+		// Delete
+
+		e.DELETE("/v1/component/:component", handlers.HandleV1ComponentDelete)
 
 		// Ready
 
