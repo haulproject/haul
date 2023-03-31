@@ -4,9 +4,26 @@ import (
 	"encoding/json"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Component struct {
+	Name string   `json:"name"`
+	Tags []string `json:"tags"`
+
+	// A component's Target should point to a kit's or assembly's ObjectID
+	Target primitive.ObjectID `json:"target"`
+}
+
+type Assembly struct {
+	Name string   `json:"name"`
+	Tags []string `json:"tags"`
+
+	// An assembly's Target should point to a kit's ObjectID
+	Target primitive.ObjectID `json:"target"`
+}
+
+type Kit struct {
 	Name string   `json:"name"`
 	Tags []string `json:"tags"`
 }

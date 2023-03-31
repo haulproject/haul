@@ -11,14 +11,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// componentDeleteCmd represents the componentDelete command
-var componentDeleteCmd = &cobra.Command{
+// assemblyDeleteCmd represents the assemblyDelete command
+var assemblyDeleteCmd = &cobra.Command{
 	Use:     "delete OBJECT_ID",
 	Aliases: []string{"rm", "remove", "del"},
-	Short:   "Deletes component identified by OBJECT_ID",
+	Short:   "Deletes assembly identified by OBJECT_ID",
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		result, err := api.Call(api.DELETE, fmt.Sprintf("/v1/component/%s", args[0]))
+		result, err := api.Call(api.DELETE, fmt.Sprintf("/v1/assembly/%s", args[0]))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -27,5 +27,5 @@ var componentDeleteCmd = &cobra.Command{
 }
 
 func init() {
-	componentCmd.AddCommand(componentDeleteCmd)
+	assemblyCmd.AddCommand(assemblyDeleteCmd)
 }

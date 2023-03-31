@@ -12,10 +12,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	id, update string
-)
-
 // componentUpdateCmd represents the componentUpdate command
 var componentUpdateCmd = &cobra.Command{
 	Use:     "update",
@@ -34,7 +30,17 @@ To empty a field, provide the zero value for the field. Note that "name" cannot 
 
 		var component map[string]interface{}
 
-		err := json.Unmarshal([]byte(update), &component)
+		id, err := cmd.Flags().GetString("id")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		update, err := cmd.Flags().GetString("update")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = json.Unmarshal([]byte(update), &component)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -56,9 +62,9 @@ To empty a field, provide the zero value for the field. Note that "name" cannot 
 func init() {
 	componentCmd.AddCommand(componentUpdateCmd)
 
-	componentUpdateCmd.Flags().StringVar(&id, "id", "", "ObjectID to update")
+	componentUpdateCmd.Flags().String("id", "", "ObjectID to update")
 	componentUpdateCmd.MarkFlagRequired("id")
 
-	componentUpdateCmd.Flags().StringVar(&update, "update", "", "Data to use in the update, in JSON format")
+	componentUpdateCmd.Flags().String("update", "", "Data to use in the update, in JSON format")
 	componentUpdateCmd.MarkFlagRequired("update")
 }
