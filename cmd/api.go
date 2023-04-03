@@ -1,6 +1,3 @@
-/*
-Copyright © 2023 The Haul Authors
-*/
 package cmd
 
 import (

@@ -1,3 +1,4 @@
+// Package handlers implements handlers for the labstack/echo/v4 API routes.
 package handlers
 
 import (

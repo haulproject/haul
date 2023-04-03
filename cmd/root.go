@@ -1,5 +1,6 @@
 /*
-Copyright © 2023 The Haul Authors
+
+Package cmd implements cobra commands for the application.
 */
 package cmd
 

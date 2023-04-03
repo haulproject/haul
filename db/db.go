@@ -1,3 +1,7 @@
+/* Package db implements database operations for the haul server.
+
+The database used is mongodb.
+*/
 package db
 
 import (
