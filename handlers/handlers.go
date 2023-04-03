@@ -241,7 +241,19 @@ func HandleV1KitRead(c echo.Context) error {
 // List
 
 func HandleV1ComponentList(c echo.Context) error {
-	components, err := db.ReadAll("components")
+	// Make filter
+	var filter bson.D
+
+	// Filter on name
+	name := c.QueryParam("name")
+
+	if name != "" {
+		filter = append(filter, bson.E{Key: "name", Value: name})
+	}
+
+	// Execute db operation
+
+	components, err := db.ReadAll("components", filter)
 	if err != nil {
 		log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
@@ -253,7 +265,7 @@ func HandleV1ComponentList(c echo.Context) error {
 }
 
 func HandleV1AssemblyList(c echo.Context) error {
-	assemblies, err := db.ReadAll("assemblies")
+	assemblies, err := db.ReadAll("assemblies", nil)
 	if err != nil {
 		log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
@@ -265,7 +277,7 @@ func HandleV1AssemblyList(c echo.Context) error {
 }
 
 func HandleV1KitList(c echo.Context) error {
-	kits, err := db.ReadAll("kits")
+	kits, err := db.ReadAll("kits", nil)
 	if err != nil {
 		log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{

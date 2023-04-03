@@ -191,7 +191,7 @@ func ReadFromID(collection string, id primitive.ObjectID) (bson.M, error) {
 
 }
 
-func ReadAll(collection string) ([]*bson.M, error) {
+func ReadAll(collection string, filter bson.D) ([]*bson.M, error) {
 	// MongoDB connection
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -215,7 +215,9 @@ func ReadAll(collection string) ([]*bson.M, error) {
 
 	var components []*bson.M
 
-	filter := bson.D{primitive.E{}}
+	if filter == nil {
+		filter = bson.D{primitive.E{}}
+	}
 
 	cursor, err := client.Database("haul").Collection(collection).Find(ctx, filter)
 	if err != nil {

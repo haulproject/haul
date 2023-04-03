@@ -18,6 +18,15 @@ var componentListCmd = &cobra.Command{
 	Short:   "Prints values of all components",
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
+		route := "/v1/component"
+		name, err := cmd.Flags().GetString("name")
+		if err != nil {
+			log.Fatal(err)
+		}
+		if name != "" {
+			route = fmt.Sprintf("%s?name=%s", route, name)
+		}
+
 		result, err := api.Call(api.GET, "/v1/component")
 		if err != nil {
 			log.Fatal(err)
@@ -38,4 +47,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// readCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	componentListCmd.Flags().String("name", "", "Filter to components with specified name")
 }
