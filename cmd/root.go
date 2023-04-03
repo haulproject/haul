@@ -1,4 +1,6 @@
 /*
+
+Package cmd implements cobra commands for the application.
 */
 package cmd
 

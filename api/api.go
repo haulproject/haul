@@ -1,3 +1,4 @@
+// Package api implements functions to make http requests, with or without data, of multiple possible methods.
 package api
 
 import (

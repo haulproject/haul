@@ -1,3 +1,4 @@
+// Package types implements the types and validation of types necessary for the application to function.
 package types
 
 import (

@@ -1,5 +1,7 @@
 /*
 Copyright © 2023 The Haul Authors
+
+Inventory management system for patchwork components and assets.
 */
 package main
 
