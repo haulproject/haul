@@ -1,0 +1,23 @@
+##              ##
+#                #
+# Client section #
+#                #
+##              ##
+
+
+# api
+#
+# This section is for connection details to a haul API server.
+api:
+
+  # Web protocol: http / https. Set this to https if the server is to be accessed behind SSL termination.
+  protocol: 'http'
+
+  # Hostname of the API server. Can be in ip format.
+  host: 'localhost'
+
+  # Port on which to contact the API server.
+  port: 1315
+
+  # Fill this if you used an API key in 'server.key' AND 'server.key_auth' is enabled.
+  #key: 'valid-key'

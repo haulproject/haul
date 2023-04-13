@@ -1,0 +1,25 @@
+##              ##
+#                #
+# Server section #
+#                #
+##              ##
+
+# This section is for mongodb configs.
+mongo:
+
+  # Mongodb uri
+  uri: 'mongodb://haul:haul@mongo:27017/'
+
+# This section controls the API server deployment.
+server:
+
+  # Port on which to run the API server
+  port: 1315
+  
+  ## Key authentication ##
+  #
+  # Enable if you want to enable key authentication. Recommended for production use.
+  #key_auth: true
+  #
+  # If 'server.key_auth' is enabled, choose a key here:
+  #key: 'valid-key'
