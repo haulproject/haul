@@ -1,9 +1,0 @@
-api:
-  protocol: 'http'
-  host: 'localhost'
-  port: 1315
-mongo:
-  uri: 'mongodb://haul:haul@mongo:27017/'
-server:
-  port: 1315
-

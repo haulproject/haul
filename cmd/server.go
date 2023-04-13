@@ -1,5 +1,5 @@
 /*
-*/
+ */
 package cmd
 
 import (
@@ -67,6 +67,15 @@ var serverCmd = &cobra.Command{
 
 		e.Pre(middleware.RemoveTrailingSlash())
 
+		if viper.GetBool("server.key_auth") {
+			if server_key := viper.GetString("server.key"); server_key != "" {
+				log.Println("[info] Server is using key authentication for API calls.")
+				e.Use(middleware.KeyAuth(func(key string, c echo.Context) (bool, error) {
+					return key == server_key, nil
+				}))
+			}
+		}
+
 		// API Routes
 
 		// Misc
@@ -131,4 +140,12 @@ func init() {
 	// server.port
 	serverCmd.Flags().Int("server-port", 1315, "Server port to expose API (config: 'server.port')")
 	viper.BindPFlag("server.port", serverCmd.Flags().Lookup("server-port"))
+
+	// server.key_auth bool
+	serverCmd.Flags().Bool("server-key-auth", false, "Enable or disable key authentication. Needs a 'server.key'. (config: 'server.key_auth')")
+	viper.BindPFlag("server.key_auth", serverCmd.Flags().Lookup("server-key-auth"))
+
+	// server.key string
+	serverCmd.Flags().String("server-key", "", "API key with which to accept calls. Must match 'api.key' field for requests to work. (config: 'server.key')")
+	viper.BindPFlag("server.key_auth", serverCmd.Flags().Lookup("server-key-auth"))
 }
