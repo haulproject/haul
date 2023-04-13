@@ -124,6 +124,10 @@ var serverCmd = &cobra.Command{
 
 		e.DELETE("/v1/kit/:kit", handlers.HandleV1KitDelete)
 
+		// Tags
+
+		e.GET("/v1/component/:component/tags", handlers.HandleV1ComponentTags)
+
 		// Ready
 
 		e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", viper.GetInt("server.port"))))

@@ -134,19 +134,24 @@ var componentTagCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
-		result, err := api.Call(api.GET, fmt.Sprintf("/v1/component/%s", args[0]))
+		result, err := api.Call(api.GET, fmt.Sprintf("/v1/component/%s/tags", args[0]))
 		if err != nil {
 			log.Fatalf("api.Call: %s\n", err)
 		}
 
-		var component types.Component
-		err = json.Unmarshal(result, &component)
+		var tags []string
+		err = json.Unmarshal(result, &tags)
 		if err != nil {
-			log.Fatalf("bson.Unmarshal: %s\n", err)
+			log.Fatalf("json.Unmarshal: %s\n", err)
 		}
 
+		// JSON print
+		//fmt.Println(tags)
+
+		//fmt.Println(result)
+
 		// Pretty print
-		for _, tag := range component.Tags {
+		for _, tag := range tags {
 			fmt.Println(tag)
 		}
 
