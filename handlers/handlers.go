@@ -625,3 +625,94 @@ func HandleV1KitDelete(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, result)
 }
+
+func HandleV1ComponentTags(c echo.Context) error {
+	componentID, err := primitive.ObjectIDFromHex(c.Param("component"))
+	if err != nil {
+		if err == primitive.ErrInvalidHex {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": fmt.Sprintf("%s", err),
+			})
+		}
+
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": fmt.Sprintf("Internal server error"),
+		})
+	}
+
+	result, err := db.ReadFromID("components", componentID)
+	if err != nil || result == nil {
+		// ErrNoDocuments means that the filter did not match any documents in
+		// the collection.
+		if err == mongo.ErrNoDocuments {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": "No document with specified ObjectID",
+			})
+		}
+
+		// other
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "Internal server error",
+		})
+	}
+
+	for key, value := range result {
+		if key == "tags" {
+			return c.JSON(http.StatusOK, value)
+		}
+	}
+
+	return c.JSON(http.StatusNotFound, map[string]string{
+		"message": fmt.Sprintf("Could not find tags for object %s", componentID),
+	})
+}
+
+func HandleV1ComponentTagsClear(c echo.Context) error {
+	componentID, err := primitive.ObjectIDFromHex(c.Param("component"))
+	if err != nil {
+		if err == primitive.ErrInvalidHex {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": fmt.Sprintf("%s", err),
+			})
+		}
+
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": fmt.Sprintf("Internal server error"),
+		})
+	}
+
+	update := bson.D{
+		primitive.E{
+			Key: "$set", Value: bson.D{
+				bson.E{Key: "tags", Value: nil}},
+		},
+	}
+
+	result, err := db.UpdateFromID("components", componentID, update)
+	if err != nil || result == nil {
+		// ErrNoDocuments means that the filter did not match any documents in
+		// the collection.
+		if err == mongo.ErrNoDocuments {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": "No document with specified ObjectID",
+			})
+		}
+
+		// other
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": err.Error(),
+		})
+	}
+
+	message, err := json.Marshal(result)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "Error marshalling result",
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{"message": string(message)})
+}
