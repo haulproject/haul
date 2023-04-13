@@ -9,24 +9,27 @@ import (
 )
 
 type Component struct {
-	Name string   `json:"name"`
-	Tags []string `json:"tags"`
+	Name   string   `json:"name"`
+	Tags   []string `json:"tags"`
+	Status string   `json:"status"`
 
 	// A component's Target should point to a kit's or assembly's ObjectID
 	Target primitive.ObjectID `json:"target"`
 }
 
 type Assembly struct {
-	Name string   `json:"name"`
-	Tags []string `json:"tags"`
+	Name   string   `json:"name"`
+	Tags   []string `json:"tags"`
+	Status string   `json:"status"`
 
 	// An assembly's Target should point to a kit's ObjectID
 	Target primitive.ObjectID `json:"target"`
 }
 
 type Kit struct {
-	Name string   `json:"name"`
-	Tags []string `json:"tags"`
+	Name   string   `json:"name"`
+	Tags   []string `json:"tags"`
+	Status string   `json:"status"`
 }
 
 /*
