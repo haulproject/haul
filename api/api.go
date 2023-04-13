@@ -29,7 +29,19 @@ func Call(method, route string) ([]byte, error) {
 
 	switch method {
 	case GET:
-		response, err := http.Get(request)
+		// Create client
+		client := &http.Client{}
+
+		// Create request
+		request, err := http.NewRequest("GET", request, nil)
+		if err != nil {
+			return nil, err
+		}
+
+		request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", viper.GetString("api.key")))
+
+		// Fetch Request
+		response, err := client.Do(request)
 		if err != nil {
 			return nil, err
 		}
@@ -51,6 +63,8 @@ func Call(method, route string) ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", viper.GetString("api.key")))
 
 		// Fetch Request
 		resp, err := client.Do(req)
@@ -78,10 +92,20 @@ func CallWithData(method, route string, data []byte) (string, error) {
 	request := fmt.Sprintf("%s%s", endpoint, route)
 	switch method {
 	case POST:
+		// initialize http client
+		client := &http.Client{}
 
-		resp, err := http.Post(request, "application/json",
-			bytes.NewBuffer(data))
+		// set the HTTP method, url, and request body
+		req, err := http.NewRequest(http.MethodPost, request, bytes.NewBuffer(data))
+		if err != nil {
+			return "", err
+		}
 
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", viper.GetString("api.key")))
+
+		// set the request header Content-Type for json
+		req.Header.Set("Content-Type", "application/json; charset=utf-8")
+		resp, err := client.Do(req)
 		if err != nil {
 			return "", err
 		}
@@ -89,7 +113,6 @@ func CallWithData(method, route string, data []byte) (string, error) {
 		var res map[string]interface{}
 
 		json.NewDecoder(resp.Body).Decode(&res)
-
 		return fmt.Sprintf("%s\n", res["message"]), nil
 	case PUT:
 		// initialize http client
@@ -100,6 +123,8 @@ func CallWithData(method, route string, data []byte) (string, error) {
 		if err != nil {
 			return "", err
 		}
+
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", viper.GetString("api.key")))
 
 		// set the request header Content-Type for json
 		req.Header.Set("Content-Type", "application/json; charset=utf-8")
