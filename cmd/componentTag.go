@@ -29,17 +29,18 @@ var componentTagCmd = &cobra.Command{
 		if clear {
 			log.Println("Clearing tags")
 
-			result, err := api.CallWithData(api.PUT, fmt.Sprintf("/v1/component/%s", args[0]), []byte("{\"tags\":[]}"))
+			result, err := api.Call(api.DELETE, fmt.Sprintf("/v1/component/%s/tags", args[0]))
 			if err != nil {
 				log.Fatalf("api.CallWithData: %s\n", err)
 			}
 
-			log.Println(result)
+			log.Println(string(result))
 
 			os.Exit(0)
 		}
 
 		if len(remove) > 0 {
+			//TODO move to proper API call
 			update := struct {
 				Tags []string `json:"tags"`
 			}{
@@ -87,6 +88,7 @@ var componentTagCmd = &cobra.Command{
 		}
 
 		if len(add) > 0 {
+			// TODO move to proper API route
 
 			result, err := api.Call(api.GET, fmt.Sprintf("/v1/component/%s", args[0]))
 			if err != nil {

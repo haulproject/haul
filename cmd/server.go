@@ -127,6 +127,7 @@ var serverCmd = &cobra.Command{
 		// Tags
 
 		e.GET("/v1/component/:component/tags", handlers.HandleV1ComponentTags)
+		e.DELETE("/v1/component/:component/tags", handlers.HandleV1ComponentTagsClear)
 
 		// Ready
 
