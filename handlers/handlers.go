@@ -4,7 +4,6 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"sort"
 
@@ -35,7 +34,7 @@ func HandleV1Healthcheck(c echo.Context) error {
 	// Send a ping to confirm a successful connection
 	_, err := db.Ping(mongoUri)
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"status":        "Internal server error",
 			"ping_database": "not ok",
@@ -55,7 +54,7 @@ func HandleV1ComponentCreate(c echo.Context) error {
 	var component types.Component
 	err := c.Bind(&component)
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -70,7 +69,7 @@ func HandleV1ComponentCreate(c echo.Context) error {
 
 	message := fmt.Sprintf("Inserted document with _id: %v", result.InsertedID)
 
-	log.Println(message)
+	//log.Println(message)
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"message": message,
@@ -82,7 +81,7 @@ func HandleV1AssemblyCreate(c echo.Context) error {
 	var assembly types.Assembly
 	err := c.Bind(&assembly)
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -97,7 +96,7 @@ func HandleV1AssemblyCreate(c echo.Context) error {
 
 	message := fmt.Sprintf("Inserted assembly with _id: %s", result.InsertedID)
 
-	log.Println(message)
+	//log.Println(message)
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"message": message,
@@ -109,7 +108,7 @@ func HandleV1KitCreate(c echo.Context) error {
 	var kit types.Kit
 	err := c.Bind(&kit)
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -124,7 +123,7 @@ func HandleV1KitCreate(c echo.Context) error {
 
 	message := fmt.Sprintf("Inserted document with _id: %s", result.InsertedID)
 
-	log.Println(message)
+	//log.Println(message)
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"message": message,
@@ -143,7 +142,7 @@ func HandleV1ComponentRead(c echo.Context) error {
 			})
 		}
 
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": fmt.Sprintf("Internal server error"),
 		})
@@ -160,7 +159,7 @@ func HandleV1ComponentRead(c echo.Context) error {
 		}
 
 		// other
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Internal server error",
 		})
@@ -178,7 +177,7 @@ func HandleV1AssemblyRead(c echo.Context) error {
 			})
 		}
 
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": fmt.Sprintf("Internal server error"),
 		})
@@ -195,7 +194,7 @@ func HandleV1AssemblyRead(c echo.Context) error {
 		}
 
 		// other
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Internal server error",
 		})
@@ -213,7 +212,7 @@ func HandleV1KitRead(c echo.Context) error {
 			})
 		}
 
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": fmt.Sprintf("Internal server error"),
 		})
@@ -230,7 +229,7 @@ func HandleV1KitRead(c echo.Context) error {
 		}
 
 		// other
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Internal server error",
 		})
@@ -244,7 +243,7 @@ func HandleV1KitRead(c echo.Context) error {
 func HandleV1ComponentList(c echo.Context) error {
 	components, err := db.ReadAll("components")
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Internal server error",
 		})
@@ -256,7 +255,7 @@ func HandleV1ComponentList(c echo.Context) error {
 func HandleV1AssemblyList(c echo.Context) error {
 	assemblies, err := db.ReadAll("assemblies")
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Internal server error",
 		})
@@ -268,7 +267,7 @@ func HandleV1AssemblyList(c echo.Context) error {
 func HandleV1KitList(c echo.Context) error {
 	kits, err := db.ReadAll("kits")
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Internal server error",
 		})
@@ -288,7 +287,7 @@ func HandleV1ComponentUpdate(c echo.Context) error {
 			})
 		}
 
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": fmt.Sprintf("Internal server error"),
 		})
@@ -298,7 +297,7 @@ func HandleV1ComponentUpdate(c echo.Context) error {
 
 	err = c.Bind(&data)
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -307,7 +306,7 @@ func HandleV1ComponentUpdate(c echo.Context) error {
 	marshalled, err := bson.Marshal(data)
 
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -315,7 +314,7 @@ func HandleV1ComponentUpdate(c echo.Context) error {
 	var component bson.D
 	err = bson.Unmarshal(marshalled, &component)
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -323,7 +322,7 @@ func HandleV1ComponentUpdate(c echo.Context) error {
 
 	validated, err := types.ValidateFields(component, types.Component{})
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Error during fields validation",
 		})
@@ -376,7 +375,7 @@ func HandleV1AssemblyUpdate(c echo.Context) error {
 			})
 		}
 
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": fmt.Sprintf("Internal server error"),
 		})
@@ -386,7 +385,7 @@ func HandleV1AssemblyUpdate(c echo.Context) error {
 
 	err = c.Bind(&data)
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -395,7 +394,7 @@ func HandleV1AssemblyUpdate(c echo.Context) error {
 	marshalled, err := bson.Marshal(data)
 
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -403,7 +402,7 @@ func HandleV1AssemblyUpdate(c echo.Context) error {
 	var assembly bson.D
 	err = bson.Unmarshal(marshalled, &assembly)
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -411,7 +410,7 @@ func HandleV1AssemblyUpdate(c echo.Context) error {
 
 	validated, err := types.ValidateFields(assembly, types.Assembly{})
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Error during fields validation",
 		})
@@ -464,7 +463,7 @@ func HandleV1KitUpdate(c echo.Context) error {
 			})
 		}
 
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": fmt.Sprintf("Internal server error"),
 		})
@@ -474,7 +473,7 @@ func HandleV1KitUpdate(c echo.Context) error {
 
 	err = c.Bind(&data)
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -483,7 +482,7 @@ func HandleV1KitUpdate(c echo.Context) error {
 	marshalled, err := bson.Marshal(data)
 
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -491,7 +490,7 @@ func HandleV1KitUpdate(c echo.Context) error {
 	var kit bson.D
 	err = bson.Unmarshal(marshalled, &kit)
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Bad request",
 		})
@@ -499,7 +498,7 @@ func HandleV1KitUpdate(c echo.Context) error {
 
 	validated, err := types.ValidateFields(kit, types.Kit{})
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Error during fields validation",
 		})
@@ -554,7 +553,7 @@ func HandleV1ComponentDelete(c echo.Context) error {
 			})
 		}
 
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": fmt.Sprintf("Internal server error"),
 		})
@@ -563,7 +562,7 @@ func HandleV1ComponentDelete(c echo.Context) error {
 	result, err := db.DeleteFromID("components", componentID)
 	if err != nil {
 		// other
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Internal server error",
 		})
@@ -581,7 +580,7 @@ func HandleV1AssemblyDelete(c echo.Context) error {
 			})
 		}
 
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": fmt.Sprintf("Internal server error"),
 		})
@@ -590,7 +589,7 @@ func HandleV1AssemblyDelete(c echo.Context) error {
 	result, err := db.DeleteFromID("assemblies", assemblyID)
 	if err != nil {
 		// other
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Internal server error",
 		})
@@ -608,7 +607,7 @@ func HandleV1KitDelete(c echo.Context) error {
 			})
 		}
 
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": fmt.Sprintf("Internal server error"),
 		})
@@ -617,7 +616,7 @@ func HandleV1KitDelete(c echo.Context) error {
 	result, err := db.DeleteFromID("kits", kitID)
 	if err != nil {
 		// other
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Internal server error",
 		})
@@ -635,7 +634,7 @@ func HandleV1ComponentTags(c echo.Context) error {
 			})
 		}
 
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": fmt.Sprintf("Internal server error"),
 		})
@@ -652,7 +651,7 @@ func HandleV1ComponentTags(c echo.Context) error {
 		}
 
 		// other
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Internal server error",
 		})
@@ -678,7 +677,7 @@ func HandleV1ComponentTagsClear(c echo.Context) error {
 			})
 		}
 
-		log.Println(err)
+		//log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": fmt.Sprintf("Internal server error"),
 		})
