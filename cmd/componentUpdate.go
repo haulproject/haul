@@ -1,5 +1,5 @@
 /*
-*/
+ */
 package cmd
 
 import (
@@ -14,7 +14,7 @@ import (
 // componentUpdateCmd represents the componentUpdate command
 var componentUpdateCmd = &cobra.Command{
 	Use:     "update",
-	Aliases: []string{"set"},
+	Aliases: []string{"u", "set", "s"},
 	Short:   "Update a component in the database",
 	Long: `Update a component in the database, identified by an ObjectID, with updated fields in JSON format.
 
