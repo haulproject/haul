@@ -1,5 +1,5 @@
 /*
-*/
+ */
 package cmd
 
 import (
@@ -14,7 +14,7 @@ import (
 // assemblyUpdateCmd represents the assemblyUpdate command
 var assemblyUpdateCmd = &cobra.Command{
 	Use:     "update",
-	Aliases: []string{"set"},
+	Aliases: []string{"u", "set", "s"},
 	Short:   "Update an assembly in the database",
 	Long: `Update an assembly in the database, identified by an ObjectID, with updated fields in JSON format.
 
