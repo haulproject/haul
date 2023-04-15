@@ -717,6 +717,11 @@ func HandleV1ComponentTagsClear(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"message": string(message)})
 }
 
+// HandleV1ComponentTagsAdd
+func HandleV1ComponentTagsAdd(c echo.Context) error {
+	return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Not implemented"})
+}
+
 // HandleV1ComponentTagsRemove
 func HandleV1ComponentTagsRemove(c echo.Context) error {
 	componentID, err := primitive.ObjectIDFromHex(c.Param("component"))
