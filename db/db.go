@@ -1,4 +1,5 @@
-/* Package db implements database operations for the haul server.
+/*
+	Package db implements database operations for the haul server.
 
 The database used is mongodb.
 */
@@ -11,6 +12,7 @@ import (
 	"os"
 	"time"
 
+	"codeberg.org/haulproject/haul/history"
 	"codeberg.org/haulproject/haul/types"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
@@ -84,6 +86,8 @@ func CreateComponent(component types.Component) (*mongo.InsertOneResult, error) 
 		return nil, err
 	}
 
+	history.LogCreate(fmt.Sprintf("%s", result.InsertedID), component.Name)
+
 	return result, nil
 }
 
@@ -119,6 +123,7 @@ func CreateAssembly(assembly types.Assembly) (*mongo.InsertOneResult, error) {
 		return nil, err
 	}
 
+	history.LogCreate(fmt.Sprintf("%s", result.InsertedID), assembly.Name)
 	return result, nil
 }
 
@@ -153,6 +158,8 @@ func CreateKit(kit types.Kit) (*mongo.InsertOneResult, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	history.LogCreate(fmt.Sprintf("%s", result.InsertedID), kit.Name)
 
 	return result, nil
 }
@@ -276,6 +283,10 @@ func DeleteFromID(collection string, id primitive.ObjectID) (*mongo.DeleteResult
 		return nil, err
 	}
 
+	if result.DeletedCount != 0 {
+		history.LogDelete(fmt.Sprintf("%s", id))
+	}
+
 	return result, nil
 
 }
@@ -332,6 +343,13 @@ func UpdateFromID(collection string, id primitive.ObjectID, data bson.D) (*mongo
 	result, err := client.Database("haul").Collection(collection).UpdateOne(ctx, filter, data)
 	if err != nil {
 		return nil, err
+	}
+
+	if result.ModifiedCount != 0 {
+		//var fields []string
+		for _, value := range data {
+			history.Log(id.String(), fmt.Sprintf("updated %s", value.Value))
+		}
 	}
 
 	return result, nil
