@@ -6,11 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
 	"codeberg.org/haulproject/haul/api"
-	"codeberg.org/haulproject/haul/types"
 	"github.com/spf13/cobra"
 )
 
@@ -27,6 +25,7 @@ var componentTagCmd = &cobra.Command{
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if clear {
+			// Clear tags
 			log.Println("Clearing tags")
 
 			result, err := api.Call(api.DELETE, fmt.Sprintf("/v1/component/%s/tags", args[0]))
@@ -40,6 +39,7 @@ var componentTagCmd = &cobra.Command{
 		}
 
 		if len(remove) > 0 {
+			// Remove some tags
 			data, err := json.Marshal(remove)
 			if err != nil {
 				log.Fatalf("json.Marshal: %s", err)
@@ -55,54 +55,22 @@ var componentTagCmd = &cobra.Command{
 		}
 
 		if len(add) > 0 {
-			// TODO move to proper API route
+			// Add some tags
+			data, err := json.Marshal(add)
+			if err != nil {
+				log.Fatalf("json.Marshal: %s", err)
+			}
 
-			result, err := api.Call(api.GET, fmt.Sprintf("/v1/component/%s", args[0]))
+			result, err := api.CallWithData(api.POST, fmt.Sprintf("/v1/component/%s/tags/add", args[0]), data)
 			if err != nil {
 				log.Fatalf("api.Call: %s\n", err)
 			}
 
-			var component types.Component
-			err = json.Unmarshal(result, &component)
-			if err != nil {
-				log.Fatalf("bson.Unmarshal: %s\n", err)
-			}
-
-			update := struct {
-				Tags []string `json:"tags"`
-			}{
-				Tags: component.Tags,
-			}
-
-			for _, add_tag := range add {
-				present := false
-				for _, tag := range component.Tags {
-					if add_tag == tag {
-						present = true
-						break
-					}
-				}
-
-				if !present {
-					update.Tags = append(update.Tags, add_tag)
-				}
-			}
-
-			data, err := json.Marshal(&update)
-			if err != nil {
-				log.Fatalf("json.Marshal: %s\n", err)
-			}
-
-			putResult, err := api.CallWithData(http.MethodPut, fmt.Sprintf("/v1/component/%s", args[0]), data)
-			if err != nil {
-				log.Fatalf("api.CallWithData: %s\n", err)
-			}
-
-			fmt.Println(putResult)
-
+			log.Println(result)
 			os.Exit(0)
 		}
 
+		// Show tags
 		result, err := api.Call(api.GET, fmt.Sprintf("/v1/component/%s/tags", args[0]))
 		if err != nil {
 			log.Fatalf("api.Call: %s\n", err)
