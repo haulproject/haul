@@ -40,50 +40,17 @@ var componentTagCmd = &cobra.Command{
 		}
 
 		if len(remove) > 0 {
-			//TODO move to proper API call
-			update := struct {
-				Tags []string `json:"tags"`
-			}{
-				Tags: []string{},
+			data, err := json.Marshal(remove)
+			if err != nil {
+				log.Fatalf("json.Marshal: %s", err)
 			}
 
-			result, err := api.Call(api.GET, fmt.Sprintf("/v1/component/%s", args[0]))
+			result, err := api.CallWithData(api.POST, fmt.Sprintf("/v1/component/%s/tags/remove", args[0]), data)
 			if err != nil {
 				log.Fatalf("api.Call: %s\n", err)
 			}
 
-			var component types.Component
-			err = json.Unmarshal(result, &component)
-			if err != nil {
-				log.Fatalf("bson.Unmarshal: %s\n", err)
-			}
-
-			for _, tag := range component.Tags {
-				taggedForRemove := false
-				for _, remove_tag := range remove {
-					if remove_tag == tag {
-						taggedForRemove = true
-						break
-					}
-				}
-
-				if !taggedForRemove {
-					update.Tags = append(update.Tags, tag)
-				}
-			}
-
-			data, err := json.Marshal(&update)
-			if err != nil {
-				log.Fatalf("json.Marshal: %s\n", err)
-			}
-
-			putResult, err := api.CallWithData(http.MethodPut, fmt.Sprintf("/v1/component/%s", args[0]), data)
-			if err != nil {
-				log.Fatalf("api.CallWithData: %s\n", err)
-			}
-
-			fmt.Println(putResult)
-
+			log.Println(result)
 			os.Exit(0)
 		}
 
