@@ -751,7 +751,6 @@ func HandleV1ComponentTagsAdd(c echo.Context) error {
 	}
 
 	var tags_old []string
-	//tagsFound := false
 
 	for key, value := range component {
 		if key == "tags" {
@@ -760,8 +759,6 @@ func HandleV1ComponentTagsAdd(c echo.Context) error {
 			if !ok && value != nil {
 				return c.JSON(http.StatusInternalServerError, "[err] Could not iterate over tags")
 			}
-
-			//tagsFound = true
 
 			for _, tag := range tags {
 				tag_string, ok := tag.(string)
@@ -773,17 +770,6 @@ func HandleV1ComponentTagsAdd(c echo.Context) error {
 		}
 	}
 
-	//TODO
-	//log.Printf("tags: %s", tags_old)
-
-	/*
-		if !tagsFound {
-			return c.JSON(http.StatusNotFound, map[string]string{
-				"message": fmt.Sprintf("Could not find tags for object %s", componentID),
-			})
-		}
-	*/
-
 	var tags_add bson.A
 
 	err = c.Bind(&tags_add)
@@ -793,8 +779,6 @@ func HandleV1ComponentTagsAdd(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-
-	//log.Printf("tags_add: %s", tags_add)
 
 	for _, tag_add := range tags_add {
 		present := false
@@ -815,8 +799,6 @@ func HandleV1ComponentTagsAdd(c echo.Context) error {
 			tags_old = append(tags_old, new_tag)
 		}
 	}
-
-	//log.Printf("tags + tags_add: %s", tags_old)
 
 	// Update
 	update := bson.D{
