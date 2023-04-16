@@ -19,6 +19,8 @@ const (
 	PUT    = "PUT"
 )
 
+// Call returns a []byte representing a response body.
+// Can be used for GET or DELETE methods
 func Call(method, route string) ([]byte, error) {
 	endpoint := fmt.Sprintf("%s://%s:%d",
 		viper.GetString("api.protocol"),
@@ -83,6 +85,8 @@ func Call(method, route string) ([]byte, error) {
 	return nil, errors.New(fmt.Sprintf("method must be 'GET' or 'DELETE', got '%s'", method))
 }
 
+// CallWithData takes data and returns a string representing a response body.
+// Can be used for POST or PUT methods
 func CallWithData(method, route string, data []byte) (string, error) {
 	endpoint := fmt.Sprintf("%s://%s:%d",
 		viper.GetString("api.protocol"),
