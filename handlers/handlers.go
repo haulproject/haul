@@ -719,7 +719,137 @@ func HandleV1ComponentTagsClear(c echo.Context) error {
 
 // HandleV1ComponentTagsAdd
 func HandleV1ComponentTagsAdd(c echo.Context) error {
-	return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Not implemented"})
+	componentID, err := primitive.ObjectIDFromHex(c.Param("component"))
+	if err != nil {
+		if err == primitive.ErrInvalidHex {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": fmt.Sprintf("%s", err),
+			})
+		}
+
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": fmt.Sprintf("Internal server error"),
+		})
+	}
+
+	component, err := db.ReadFromID("components", componentID)
+	if err != nil || component == nil {
+		// ErrNoDocuments means that the filter did not match any documents in
+		// the collection.
+		if err == mongo.ErrNoDocuments {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": "No document with specified ObjectID",
+			})
+		}
+
+		// other
+		log.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "Internal server error",
+		})
+	}
+
+	var tags_old []string
+	//tagsFound := false
+
+	for key, value := range component {
+		if key == "tags" {
+			tags, ok := value.(primitive.A)
+
+			if !ok && value != nil {
+				return c.JSON(http.StatusInternalServerError, "[err] Could not iterate over tags")
+			}
+
+			//tagsFound = true
+
+			for _, tag := range tags {
+				tag_string, ok := tag.(string)
+				if !ok {
+					return c.JSON(http.StatusInternalServerError, "Cannot cast tag into string")
+				}
+				tags_old = append(tags_old, tag_string)
+			}
+		}
+	}
+
+	//TODO
+	//log.Printf("tags: %s", tags_old)
+
+	/*
+		if !tagsFound {
+			return c.JSON(http.StatusNotFound, map[string]string{
+				"message": fmt.Sprintf("Could not find tags for object %s", componentID),
+			})
+		}
+	*/
+
+	var tags_add bson.A
+
+	err = c.Bind(&tags_add)
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": err.Error(),
+		})
+	}
+
+	//log.Printf("tags_add: %s", tags_add)
+
+	for _, tag_add := range tags_add {
+		present := false
+		for _, tag := range tags_old {
+			if tag == tag_add {
+				present = true
+			}
+
+		}
+
+		if !present {
+			new_tag, ok := tag_add.(string)
+			if !ok {
+				return c.JSON(http.StatusBadRequest, map[string]string{
+					"message": err.Error(),
+				})
+			}
+			tags_old = append(tags_old, new_tag)
+		}
+	}
+
+	//log.Printf("tags + tags_add: %s", tags_old)
+
+	// Update
+	update := bson.D{
+		primitive.E{
+			Key: "$set", Value: bson.D{
+				bson.E{Key: "tags", Value: tags_old}},
+		},
+	}
+
+	updateResult, err := db.UpdateFromID("components", componentID, update)
+	if err != nil || updateResult == nil {
+		// ErrNoDocuments means that the filter did not match any documents in
+		// the collection.
+		if err == mongo.ErrNoDocuments {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"message": "No document with specified ObjectID",
+			})
+		}
+
+		// other
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": err.Error(),
+		})
+	}
+
+	message, err := json.Marshal(updateResult)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "Error marshalling updateResult",
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{"message": string(message)})
 }
 
 // HandleV1ComponentTagsRemove
