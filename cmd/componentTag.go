@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"codeberg.org/haulproject/haul/api"
@@ -28,7 +29,7 @@ var componentTagCmd = &cobra.Command{
 			// Clear tags
 			log.Println("Clearing tags")
 
-			result, err := api.Call(api.DELETE, fmt.Sprintf("/v1/component/%s/tags", args[0]))
+			result, err := api.Call(http.MethodDelete, fmt.Sprintf("/v1/component/%s/tags", args[0]))
 			if err != nil {
 				log.Fatalf("api.CallWithData: %s\n", err)
 			}
@@ -45,7 +46,7 @@ var componentTagCmd = &cobra.Command{
 				log.Fatalf("json.Marshal: %s", err)
 			}
 
-			result, err := api.CallWithData(api.POST, fmt.Sprintf("/v1/component/%s/tags/remove", args[0]), data)
+			result, err := api.CallWithData(http.MethodPost, fmt.Sprintf("/v1/component/%s/tags/remove", args[0]), data)
 			if err != nil {
 				log.Fatalf("api.Call: %s\n", err)
 			}
@@ -61,7 +62,7 @@ var componentTagCmd = &cobra.Command{
 				log.Fatalf("json.Marshal: %s", err)
 			}
 
-			result, err := api.CallWithData(api.POST, fmt.Sprintf("/v1/component/%s/tags/add", args[0]), data)
+			result, err := api.CallWithData(http.MethodPost, fmt.Sprintf("/v1/component/%s/tags/add", args[0]), data)
 			if err != nil {
 				log.Fatalf("api.Call: %s\n", err)
 			}
@@ -71,7 +72,7 @@ var componentTagCmd = &cobra.Command{
 		}
 
 		// Show tags
-		result, err := api.Call(api.GET, fmt.Sprintf("/v1/component/%s/tags", args[0]))
+		result, err := api.Call(http.MethodGet, fmt.Sprintf("/v1/component/%s/tags", args[0]))
 		if err != nil {
 			log.Fatalf("api.Call: %s\n", err)
 		}

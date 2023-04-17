@@ -1,11 +1,12 @@
 /*
-*/
+ */
 package cmd
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"codeberg.org/haulproject/haul/api"
@@ -50,7 +51,7 @@ var assemblyCreateCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		result, err := api.CallWithData(api.POST, "/v1/assembly", currentAssembly)
+		result, err := api.CallWithData(http.MethodPost, "/v1/assembly", currentAssembly)
 		if err != nil {
 			log.Fatal(err)
 		}

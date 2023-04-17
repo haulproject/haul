@@ -1,10 +1,11 @@
 /*
-*/
+ */
 package cmd
 
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"codeberg.org/haulproject/haul/api"
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ var componentDeleteCmd = &cobra.Command{
 	Short:   "Deletes component identified by OBJECT_ID",
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		result, err := api.Call(api.DELETE, fmt.Sprintf("/v1/component/%s", args[0]))
+		result, err := api.Call(http.MethodDelete, fmt.Sprintf("/v1/component/%s", args[0]))
 		if err != nil {
 			log.Fatal(err)
 		}

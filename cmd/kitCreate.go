@@ -1,11 +1,12 @@
 /*
-*/
+ */
 package cmd
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"codeberg.org/haulproject/haul/api"
@@ -50,7 +51,7 @@ var kitCreateCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		result, err := api.CallWithData(api.POST, "/v1/kit", currentKit)
+		result, err := api.CallWithData(http.MethodPost, "/v1/kit", currentKit)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -1,10 +1,11 @@
 /*
-*/
+ */
 package cmd
 
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"codeberg.org/haulproject/haul/api"
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ var kitListCmd = &cobra.Command{
 	Short:   "Prints values of all kits",
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		result, err := api.Call(api.GET, "/v1/kit")
+		result, err := api.Call(http.MethodGet, "/v1/kit")
 		if err != nil {
 			log.Fatal(err)
 		}

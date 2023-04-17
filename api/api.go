@@ -12,13 +12,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	GET    = "GET"
-	POST   = "POST"
-	DELETE = "DELETE"
-	PUT    = "PUT"
-)
-
 // Call returns a []byte representing a response body.
 // Can be used for GET or DELETE methods
 func Call(method, route string) ([]byte, error) {
@@ -30,12 +23,12 @@ func Call(method, route string) ([]byte, error) {
 	request := fmt.Sprintf("%s%s", endpoint, route)
 
 	switch method {
-	case GET:
+	case http.MethodGet:
 		// Create client
 		client := &http.Client{}
 
 		// Create request
-		request, err := http.NewRequest("GET", request, nil)
+		request, err := http.NewRequest(http.MethodGet, request, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -56,12 +49,12 @@ func Call(method, route string) ([]byte, error) {
 		}
 
 		return body, nil
-	case DELETE:
+	case http.MethodDelete:
 		// Create client
 		client := &http.Client{}
 
 		// Create request
-		req, err := http.NewRequest("DELETE", request, nil)
+		req, err := http.NewRequest(http.MethodDelete, request, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -95,7 +88,7 @@ func CallWithData(method, route string, data []byte) (string, error) {
 	)
 	request := fmt.Sprintf("%s%s", endpoint, route)
 	switch method {
-	case POST:
+	case http.MethodPost:
 		// initialize http client
 		client := &http.Client{}
 
@@ -118,7 +111,7 @@ func CallWithData(method, route string, data []byte) (string, error) {
 
 		json.NewDecoder(resp.Body).Decode(&res)
 		return fmt.Sprintf("%s\n", res["message"]), nil
-	case PUT:
+	case http.MethodPut:
 		// initialize http client
 		client := &http.Client{}
 

@@ -1,11 +1,12 @@
 /*
-*/
+ */
 package cmd
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"codeberg.org/haulproject/haul/api"
@@ -63,7 +64,7 @@ Create a new set of speakers without any tags
 			log.Fatal(err)
 		}
 
-		result, err := api.CallWithData(api.POST, "/v1/component", currentComponent)
+		result, err := api.CallWithData(http.MethodPost, "/v1/component", currentComponent)
 		if err != nil {
 			log.Fatal(err)
 		}
