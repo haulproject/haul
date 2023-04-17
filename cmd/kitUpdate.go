@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 
 	"codeberg.org/haulproject/haul/api"
 	"github.com/spf13/cobra"
@@ -49,7 +50,7 @@ To empty a field, provide the zero value for the field. Note that "name" cannot 
 			log.Fatal(err)
 		}
 
-		result, err := api.CallWithData(api.PUT, fmt.Sprintf("/v1/kit/%s", id), currentKit)
+		result, err := api.CallWithData(http.MethodPut, fmt.Sprintf("/v1/kit/%s", id), currentKit)
 		if err != nil {
 			log.Fatal(err)
 		}
