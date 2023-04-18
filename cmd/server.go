@@ -136,6 +136,11 @@ var serverCmd = &cobra.Command{
 		e.POST("/v1/assembly/:assembly/tags/remove", handlers.HandleV1AssemblyTagsRemove)
 		e.POST("/v1/assembly/:assembly/tags/add", handlers.HandleV1AssemblyTagsAdd)
 
+		e.GET("/v1/kit/:kit/tags", handlers.HandleV1KitTags)
+		e.DELETE("/v1/kit/:kit/tags", handlers.HandleV1KitTagsClear)
+		e.POST("/v1/kit/:kit/tags/remove", handlers.HandleV1KitTagsRemove)
+		e.POST("/v1/kit/:kit/tags/add", handlers.HandleV1KitTagsAdd)
+
 		// Ready
 
 		e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", viper.GetInt("server.port"))))
