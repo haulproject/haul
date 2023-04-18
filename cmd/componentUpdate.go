@@ -14,7 +14,7 @@ import (
 
 // componentUpdateCmd represents the componentUpdate command
 var componentUpdateCmd = &cobra.Command{
-	Use:     "update",
+	Use:     "update OBJECT_ID",
 	Aliases: []string{"u", "set", "s"},
 	Short:   "Update a component in the database",
 	Long: `Update a component in the database, identified by an ObjectID, with updated fields in JSON format.
@@ -22,20 +22,17 @@ var componentUpdateCmd = &cobra.Command{
 Any fields not specified will be unaffected by the update.
 
 To empty a field, provide the zero value for the field. Note that "name" cannot be made empty.`,
-	Example: `Update component identified by ObjectID 64212ede8e7046c7a1e88557, to replace all tags with "status=broken".
+	Example: `Update component identified by ObjectID 64212ede8e7046c7a1e88557, to set status to "broken"
 
-    $ haul component update --id '64212ede8e7046c7a1e88557' --update '{ "tags": [ "status=broken" ] }'`,
-	Args: cobra.ExactArgs(0),
+    $ haul component update 64212ede8e7046c7a1e88557 --data '{ "status":"broken" }'`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var component map[string]interface{}
 
-		id, err := cmd.Flags().GetString("id")
-		if err != nil {
-			log.Fatal(err)
-		}
+		id := args[0]
 
-		update, err := cmd.Flags().GetString("update")
+		update, err := cmd.Flags().GetString("data")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -62,9 +59,6 @@ To empty a field, provide the zero value for the field. Note that "name" cannot 
 func init() {
 	componentCmd.AddCommand(componentUpdateCmd)
 
-	componentUpdateCmd.Flags().String("id", "", "ObjectID to update")
-	componentUpdateCmd.MarkFlagRequired("id")
-
-	componentUpdateCmd.Flags().String("update", "", "Data to use in the update, in JSON format")
-	componentUpdateCmd.MarkFlagRequired("update")
+	componentUpdateCmd.Flags().String("data", "", "Data to use in the update, in JSON format")
+	componentUpdateCmd.MarkFlagRequired("data")
 }

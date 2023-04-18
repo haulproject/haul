@@ -22,20 +22,17 @@ var kitUpdateCmd = &cobra.Command{
 Any fields not specified will be unaffected by the update.
 
 To empty a field, provide the zero value for the field. Note that "name" cannot be made empty.`,
-	Example: `Update kit identified by ObjectID 64212ede8e7046c7a1e88557, to replace name with "Rack 01" and tags with "location=floor_5".
+	Example: `Update kit identified by ObjectID 64212ede8e7046c7a1e88557, to replace name with "Rack 01" and tags with "location=floor_5" (note: it can be better to use specific tag routes, but this remains possible).
 
-    $ haul kit update --id '64212ede8e7046c7a1e88557' --update '{ "name": "Rack 01", "tags": [ "location=floor_5" ] }'`,
-	Args: cobra.ExactArgs(0),
+    $ haul kit update 64212ede8e7046c7a1e88557 --data '{ "name": "Rack 01", "tags": [ "location=floor_5" ] }'`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var kit map[string]interface{}
 
-		id, err := cmd.Flags().GetString("id")
-		if err != nil {
-			log.Fatal(err)
-		}
+		id := args[0]
 
-		update, err := cmd.Flags().GetString("update")
+		update, err := cmd.Flags().GetString("data")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -62,9 +59,6 @@ To empty a field, provide the zero value for the field. Note that "name" cannot 
 func init() {
 	kitCmd.AddCommand(kitUpdateCmd)
 
-	kitUpdateCmd.Flags().String("id", "", "ObjectID to update")
-	kitUpdateCmd.MarkFlagRequired("id")
-
-	kitUpdateCmd.Flags().String("update", "", "Data to use in the update, in JSON format")
-	kitUpdateCmd.MarkFlagRequired("update")
+	kitUpdateCmd.Flags().String("data", "", "Data to use in the update, in JSON format")
+	kitUpdateCmd.MarkFlagRequired("data")
 }
