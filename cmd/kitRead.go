@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"codeberg.org/haulproject/haul/api"
+	"codeberg.org/haulproject/haul/cli"
 	"github.com/spf13/cobra"
 )
 
@@ -18,11 +19,24 @@ var kitReadCmd = &cobra.Command{
 	Short:   "Prints values of kit identified by OBJECT_ID",
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		result, err := api.Call(http.MethodGet, fmt.Sprintf("/v1/kit/%s", args[0]))
+		client := cli.New()
+
+		kit_bytes, err := api.Call(http.MethodGet, fmt.Sprintf("/v1/kit/%s", args[0]))
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(string(result))
+
+		output, err := rootCmd.PersistentFlags().GetString("output")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		client.OutputStyle = output
+
+		err = client.Output(kit_bytes)
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 

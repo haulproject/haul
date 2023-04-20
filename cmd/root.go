@@ -1,5 +1,4 @@
 /*
-
 Package cmd implements cobra commands for the application.
 */
 package cmd
@@ -55,6 +54,9 @@ func init() {
 
 	// api.key
 	//TODO
+
+	//rootCmd.PersistentFlags().StringP("output", "o", "tabby", "Output style { tabby | json | json_pretty }")
+	rootCmd.PersistentFlags().StringP("output", "o", "json", "Output style { tabby | json | json_pretty }")
 }
 
 // initConfig reads in config file and ENV variables if set.

@@ -32,6 +32,11 @@ type Kit struct {
 	Status string   `json:"status"`
 }
 
+type KitWithID struct {
+	ID primitive.ObjectID `json:"_id"`
+	Kit
+}
+
 /*
 Taking a bson.D and a reference interface{}, returns a bson.D that only contains fields whose keys are also valid keys in the reference interface{}.
 
@@ -40,22 +45,9 @@ If an error is encountered, it is returned, and the returned bson.D will be nil.
 If no error is encountered, the validated bson.D is returned, and the error will be nil.
 */
 func ValidateFields(document bson.D, reference interface{}) (bson.D, error) {
-	// Get possible fields
-	fields, err := json.Marshal(reference)
+	keys, err := GetFields(reference)
 	if err != nil {
 		return nil, err
-	}
-
-	m := make(map[string]interface{})
-
-	if err = json.Unmarshal(fields, &m); err != nil {
-		return nil, err
-	}
-
-	var keys []string
-
-	for key := range m {
-		keys = append(keys, key)
 	}
 
 	var validFields bson.D
@@ -73,4 +65,47 @@ func ValidateFields(document bson.D, reference interface{}) (bson.D, error) {
 	}
 
 	return validFields, nil
+}
+
+// GetFields returns an unordered list of fields in a reference interface{}
+func GetFields(reference interface{}) ([]string, error) {
+	var fields []string
+	fields_bytes, err := json.Marshal(reference)
+	if err != nil {
+		return fields, err
+	}
+
+	m := make(map[string]interface{})
+
+	if err = json.Unmarshal(fields_bytes, &m); err != nil {
+		return fields, err
+	}
+
+	for field := range m {
+		fields = append(fields, field)
+	}
+
+	return fields, nil
+}
+
+func GetFieldsOrdered(reference interface{}) ([]string, error) {
+	var fields []string
+
+	fields_bytes, err := json.Marshal(reference)
+	if err != nil {
+		return fields, err
+	}
+
+	var fields_map map[string]interface{}
+
+	err = json.Unmarshal(fields_bytes, &fields_map)
+	if err != nil {
+		return fields, err
+	}
+
+	for field := range fields_map {
+		fields = append(fields, field)
+	}
+
+	return fields, nil
 }
