@@ -65,7 +65,7 @@ var kitCreateCmd = &cobra.Command{
 
 		client.OutputStyle = output
 
-		err = client.Output(result)
+		err = client.Output([]byte(result))
 		if err != nil {
 			log.Fatal(err)
 		}
