@@ -4,12 +4,12 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	"codeberg.org/haulproject/haul/api"
-	"codeberg.org/haulproject/haul/cli"
 	"codeberg.org/haulproject/haul/types"
 	"github.com/spf13/cobra"
 )
@@ -56,19 +56,7 @@ var kitCreateCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		client := cli.New()
-
-		output, err := rootCmd.PersistentFlags().GetString("output")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		client.OutputStyle = output
-
-		err = client.Output([]byte(result))
-		if err != nil {
-			log.Fatal(err)
-		}
+		fmt.Println(result)
 	},
 }
 
