@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
+	"codeberg.org/haulproject/haul/types"
 )
 
 const (
@@ -20,6 +22,30 @@ type Client struct {
 
 func New() *Client {
 	return &Client{OutputStyle: OutputStyleTabby}
+}
+
+func (c *Client) OutputObject(tabby_printer types.TabbyPrinter) error {
+	switch c.OutputStyle {
+	case OutputStyleJSON:
+		message, err := json.Marshal(tabby_printer)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(string(message))
+
+	case OutputStyleJSONPretty:
+		message, err := json.MarshalIndent(tabby_printer, "  ", "")
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(string(message))
+	case OutputStyleTabby:
+		tabby_printer.TabbyPrint()
+	}
+
+	return nil
 }
 
 func (c *Client) Output(message []byte) error {

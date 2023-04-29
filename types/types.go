@@ -4,6 +4,7 @@ package types
 import (
 	"encoding/json"
 
+	"github.com/cheynewallace/tabby"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -17,6 +18,11 @@ type Component struct {
 	Target primitive.ObjectID `json:"target"`
 }
 
+type ComponentWithID struct {
+	ID primitive.ObjectID `json:"_id"`
+	Component
+}
+
 type Assembly struct {
 	Name   string   `json:"name"`
 	Tags   []string `json:"tags"`
@@ -24,6 +30,11 @@ type Assembly struct {
 
 	// An assembly's Target should point to a kit's ObjectID
 	Target primitive.ObjectID `json:"target"`
+}
+
+type AssemblyWithID struct {
+	ID primitive.ObjectID `json:"_id"`
+	Assembly
 }
 
 type Kit struct {
@@ -35,6 +46,142 @@ type Kit struct {
 type KitWithID struct {
 	ID primitive.ObjectID `json:"_id"`
 	Kit
+}
+
+type Components struct {
+	Components []Component `json:"components"`
+}
+
+type ComponentsWithID struct {
+	ComponentsWithID []ComponentWithID `json:"components"`
+}
+
+type Assemblies struct {
+	Assemblies []Assembly `json:"assemblies"`
+}
+
+type AssembliesWithID struct {
+	AssembliesWithID []AssemblyWithID `json:"assemblies"`
+}
+
+type Kits struct {
+	Kits []Kit `json:"kits"`
+}
+
+type KitsWithID struct {
+	KitsWithID []KitWithID `json:"kits"`
+}
+
+type TabbyPrinter interface {
+	TabbyPrint() error
+}
+
+func (c *Components) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("name", "tags", "status", "target")
+
+	for _, component := range c.Components {
+		tags, err := json.Marshal(component.Tags)
+		if err != nil {
+			return err
+		}
+
+		t.AddLine(component.Name, string(tags), component.Status, component.Target)
+	}
+
+	t.Print()
+	return nil
+}
+
+func (c *ComponentsWithID) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("id", "name", "tags", "status", "target")
+
+	for _, component := range c.ComponentsWithID {
+		tags, err := json.Marshal(component.Tags)
+		if err != nil {
+			return err
+		}
+
+		t.AddLine(component.ID, component.Name, string(tags), component.Status, component.Target)
+	}
+
+	t.Print()
+	return nil
+}
+
+func (a *Assemblies) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("name", "tags", "status", "target")
+
+	for _, assembly := range a.Assemblies {
+		tags, err := json.Marshal(assembly.Tags)
+		if err != nil {
+			return err
+		}
+
+		t.AddLine(assembly.Name, string(tags), assembly.Status, assembly.Target)
+	}
+
+	t.Print()
+	return nil
+}
+
+func (a *AssembliesWithID) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("id", "name", "tags", "status", "target")
+
+	for _, assembly := range a.AssembliesWithID {
+		tags, err := json.Marshal(assembly.Tags)
+		if err != nil {
+			return err
+		}
+
+		t.AddLine(assembly.ID, assembly.Name, string(tags), assembly.Status, assembly.Target)
+	}
+
+	t.Print()
+	return nil
+}
+
+func (k *Kits) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("name", "tags", "status")
+
+	for _, kit := range k.Kits {
+		tags, err := json.Marshal(kit.Tags)
+		if err != nil {
+			return err
+		}
+
+		t.AddLine(kit.Name, string(tags), kit.Status)
+	}
+
+	t.Print()
+	return nil
+}
+
+func (k *KitsWithID) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("id", "name", "tags", "status")
+
+	for _, kit := range k.KitsWithID {
+		tags, err := json.Marshal(kit.Tags)
+		if err != nil {
+			return err
+		}
+
+		t.AddLine(kit.ID, kit.Name, string(tags), kit.Status)
+	}
+
+	t.Print()
+	return nil
 }
 
 /*
