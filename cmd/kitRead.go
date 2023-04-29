@@ -3,12 +3,14 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
 	"codeberg.org/haulproject/haul/api"
 	"codeberg.org/haulproject/haul/cli"
+	"codeberg.org/haulproject/haul/types"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +35,14 @@ var kitReadCmd = &cobra.Command{
 
 		client.OutputStyle = output
 
-		err = client.Output(kit_bytes)
+		var kit types.KitWithID
+
+		err = json.Unmarshal(kit_bytes, &kit)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = client.OutputObject(&kit)
 		if err != nil {
 			log.Fatal(err)
 		}
