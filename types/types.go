@@ -76,6 +76,38 @@ type TabbyPrinter interface {
 	TabbyPrint() error
 }
 
+func (c *Component) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("name", "tags", "status", "target")
+
+	tags, err := json.Marshal(c.Tags)
+	if err != nil {
+		return err
+	}
+
+	t.AddLine(c.Name, string(tags), c.Status, c.Target)
+
+	t.Print()
+	return nil
+}
+
+func (c *ComponentWithID) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("id", "name", "tags", "status", "target")
+
+	tags, err := json.Marshal(c.Tags)
+	if err != nil {
+		return err
+	}
+
+	t.AddLine(c.ID, c.Name, string(tags), c.Status, c.Target)
+
+	t.Print()
+	return nil
+}
+
 func (c *Components) TabbyPrint() error {
 	t := tabby.New()
 
@@ -112,6 +144,38 @@ func (c *ComponentsWithID) TabbyPrint() error {
 	return nil
 }
 
+func (a *Assembly) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("name", "tags", "status", "target")
+
+	tags, err := json.Marshal(a.Tags)
+	if err != nil {
+		return err
+	}
+
+	t.AddLine(a.Name, string(tags), a.Status, a.Target)
+
+	t.Print()
+	return nil
+}
+
+func (a *AssemblyWithID) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("id", "name", "tags", "status", "target")
+
+	tags, err := json.Marshal(a.Tags)
+	if err != nil {
+		return err
+	}
+
+	t.AddLine(a.ID, a.Name, string(tags), a.Status, a.Target)
+
+	t.Print()
+	return nil
+}
+
 func (a *Assemblies) TabbyPrint() error {
 	t := tabby.New()
 
@@ -143,6 +207,38 @@ func (a *AssembliesWithID) TabbyPrint() error {
 
 		t.AddLine(assembly.ID, assembly.Name, string(tags), assembly.Status, assembly.Target)
 	}
+
+	t.Print()
+	return nil
+}
+
+func (k *Kit) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("name", "tags", "status")
+
+	tags, err := json.Marshal(k.Tags)
+	if err != nil {
+		return err
+	}
+
+	t.AddLine(k.Name, string(tags), k.Status)
+
+	t.Print()
+	return nil
+}
+
+func (k *KitWithID) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader("id", "name", "tags", "status")
+
+	tags, err := json.Marshal(k.Tags)
+	if err != nil {
+		return err
+	}
+
+	t.AddLine(k.ID, k.Name, string(tags), k.Status)
 
 	t.Print()
 	return nil
