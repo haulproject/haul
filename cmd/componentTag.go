@@ -13,11 +13,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	clear       bool
-	add, remove []string
-)
-
 // componentTagCmd represents the componentTag command
 var componentTagCmd = &cobra.Command{
 	Use:     "tags ID",
@@ -25,6 +20,16 @@ var componentTagCmd = &cobra.Command{
 	Short:   "Access and edit tags for a component",
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		var (
+			clear       bool
+			add, remove []string
+		)
+
+		//TODO verify errors
+		clear, _ = cmd.Flags().GetBool("clear")
+		add, _ = cmd.Flags().GetStringSlice("add")
+		remove, _ = cmd.Flags().GetStringSlice("remove")
+
 		if clear {
 			// Clear tags
 			log.Println("Clearing tags")
@@ -99,9 +104,9 @@ var componentTagCmd = &cobra.Command{
 func init() {
 	componentCmd.AddCommand(componentTagCmd)
 
-	componentTagCmd.Flags().BoolVar(&clear, "clear", false, "If set, will delete all tags in this object")
-	componentTagCmd.Flags().StringSliceVar(&add, "add", nil, "List of tags to add")
-	componentTagCmd.Flags().StringSliceVar(&remove, "remove", nil, "List of tags to remove")
+	componentTagCmd.Flags().Bool("clear", false, "If set, will delete all tags in this object")
+	componentTagCmd.Flags().StringSlice("add", nil, "List of tags to add")
+	componentTagCmd.Flags().StringSlice("remove", nil, "List of tags to remove")
 
 	componentTagCmd.MarkFlagsMutuallyExclusive("clear", "add", "remove")
 }
