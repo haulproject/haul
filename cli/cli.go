@@ -35,7 +35,7 @@ func (c *Client) OutputObject(tabby_printer types.TabbyPrinter) error {
 		fmt.Println(string(message))
 
 	case OutputStyleJSONPretty:
-		message, err := json.MarshalIndent(tabby_printer, "  ", "")
+		message, err := json.MarshalIndent(tabby_printer, "", "  ")
 		if err != nil {
 			return err
 		}
