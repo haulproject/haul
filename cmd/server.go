@@ -165,4 +165,16 @@ func init() {
 	// server.key string
 	serverCmd.Flags().String("server-key", "", "API key with which to accept calls. Must match 'api.key' field for requests to work. (config: 'server.key')")
 	viper.BindPFlag("server.key_auth", serverCmd.Flags().Lookup("server-key-auth"))
+
+	// server.tls.enabled bool
+	serverCmd.Flags().Bool("server-tls-enabled", false, "Whether to start server with TLS (https) or without (http). (config: 'server.tls.enabled')")
+	viper.BindPFlag("server.tls.enabled", serverCmd.Flags().Lookup("server-tls-enabled"))
+
+	// server.tls.cert string
+	serverCmd.Flags().String("server-tls-cert", "", "Location of the TLS certificate to use. (config: 'server.tls.cert')")
+	viper.BindPFlag("server.tls.cert", serverCmd.Flags().Lookup("server-tls-cert"))
+
+	// server.tls.key string
+	serverCmd.Flags().String("server-tls-key", "", "Location of the TLS private key to use. (config: 'server.tls.key')")
+	viper.BindPFlag("server.tls.key", serverCmd.Flags().Lookup("server-tls-key"))
 }
