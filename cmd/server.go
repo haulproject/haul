@@ -143,7 +143,23 @@ var serverCmd = &cobra.Command{
 
 		// Ready
 
-		e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", viper.GetInt("server.port"))))
+		is_tls := viper.GetBool("server.tls.enabled")
+		cert := viper.GetString("server.tls.cert")
+		key := viper.GetString("server.tls.key")
+
+		port := viper.GetInt("server.port")
+
+		address := fmt.Sprintf(":%d", port)
+
+		var start_err error
+
+		if is_tls {
+			start_err = e.StartTLS(address, cert, key)
+		} else {
+			start_err = e.Start(address)
+		}
+
+		e.Logger.Fatal(start_err)
 	},
 }
 
