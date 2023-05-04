@@ -16,7 +16,7 @@ import (
 // componentTagCmd represents the componentTag command
 var componentTagCmd = &cobra.Command{
 	Use:     "tags ID",
-	Aliases: []string{"t", "tag"},
+	Aliases: []string{"tag"},
 	Short:   "Access and edit tags for a component",
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
