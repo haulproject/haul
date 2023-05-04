@@ -352,3 +352,21 @@ func GetFieldsOrdered(reference interface{}) ([]string, error) {
 
 	return fields, nil
 }
+
+type InsertResult struct {
+	Message     string        `json:"message"`
+	InsertedIDs []interface{} `json:"inserted_ids,omitempty"`
+}
+
+func (r InsertResult) TabbyPrint() error {
+	t := tabby.New()
+
+	t.AddHeader(r.Message)
+
+	for _, id := range r.InsertedIDs {
+		t.AddLine(id)
+	}
+
+	t.Print()
+	return nil
+}
