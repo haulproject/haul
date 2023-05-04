@@ -16,7 +16,7 @@ import (
 // assemblyTagCmd represents the assemblyTag command
 var assemblyTagCmd = &cobra.Command{
 	Use:     "tags ID",
-	Aliases: []string{"t", "tag"},
+	Aliases: []string{"tag"},
 	Short:   "Access and edit tags for a assembly",
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
