@@ -147,9 +147,9 @@ var serverCmd = &cobra.Command{
 		e.DELETE("/v1/component/:component/target", handlers.HandleV1ComponentTargetUnset)
 		e.POST("/v1/component/:component/target", handlers.HandleV1ComponentTargetSet)
 
-		e.GET("/v1/component/:component/target", handlers.HandleV1AssemblyTarget)
-		e.DELETE("/v1/component/:component/target", handlers.HandleV1AssemblyTargetUnset)
-		e.POST("/v1/component/:component/target", handlers.HandleV1AssemblyTargetSet)
+		e.GET("/v1/assembly/:assembly/target", handlers.HandleV1AssemblyTarget)
+		e.DELETE("/v1/assembly/:assembly/target", handlers.HandleV1AssemblyTargetUnset)
+		e.POST("/v1/assembly/:assembly/target", handlers.HandleV1AssemblyTargetSet)
 
 		// Ready
 
