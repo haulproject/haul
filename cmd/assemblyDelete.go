@@ -13,16 +13,18 @@ import (
 
 // assemblyDeleteCmd represents the assemblyDelete command
 var assemblyDeleteCmd = &cobra.Command{
-	Use:     "delete OBJECT_ID",
+	Use:     "delete OBJECT_ID...",
 	Aliases: []string{"rm", "remove", "del"},
-	Short:   "Deletes assembly identified by OBJECT_ID",
-	Args:    cobra.ExactArgs(1),
+	Short:   "Deletes assemblies identified by one or more OBJECT_ID",
+	Args:    cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		result, err := api.Call(http.MethodDelete, fmt.Sprintf("/v1/assembly/%s", args[0]))
-		if err != nil {
-			log.Fatal(err)
+		for _, arg := range args {
+			result, err := api.Call(http.MethodDelete, fmt.Sprintf("/v1/assembly/%s", arg))
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println(string(result))
 		}
-		fmt.Println(string(result))
 	},
 }
 
