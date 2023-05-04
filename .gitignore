@@ -21,3 +21,8 @@
 # Go workspace file
 go.work
 
+# ---> PEM
+*.pem
+
+# ---> SWP
+*.swp

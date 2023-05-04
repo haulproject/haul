@@ -1,10 +1,11 @@
 /*
-*/
+ */
 package cmd
 
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"codeberg.org/haulproject/haul/api"
 	"github.com/spf13/cobra"
@@ -16,7 +17,7 @@ var healthcheckCmd = &cobra.Command{
 	Aliases: []string{"ping"},
 	Short:   "Print server's healthcheck to test connection",
 	Run: func(cmd *cobra.Command, args []string) {
-		result, err := api.Call(api.GET, "/v1/healthcheck")
+		result, err := api.Call(http.MethodGet, "/v1/healthcheck")
 		if err != nil {
 			log.Fatal(err)
 		}

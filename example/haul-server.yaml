@@ -23,3 +23,14 @@ server:
   #
   # If 'server.key_auth' is enabled, choose a key here:
   #key: 'valid-key'
+
+  ## TLS ##
+  #
+  # Enable to use https, disable for http
+  #
+  # Recommended to be on with a valid cert and key for production.
+  # Self-signed works as well, but it could be harder to work with the server.
+  tls:
+    enabled: false
+    cert: '/path/to/cert.pem'
+    key: '/path/to/key.pem'

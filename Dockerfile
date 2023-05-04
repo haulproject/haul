@@ -10,6 +10,8 @@ ADD cmd/ cmd/
 
 ADD api/ api/
 
+ADD cli/ cli/
+
 ADD types/ types/
 
 ADD db/ db/

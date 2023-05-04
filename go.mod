@@ -3,6 +3,7 @@ module codeberg.org/haulproject/haul
 go 1.19
 
 require (
+	github.com/cheynewallace/tabby v1.1.1
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0

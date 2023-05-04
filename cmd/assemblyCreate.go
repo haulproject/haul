@@ -1,11 +1,12 @@
 /*
-*/
+ */
 package cmd
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"codeberg.org/haulproject/haul/api"
@@ -15,10 +16,10 @@ import (
 
 // assemblyCreateCmd represents the assemblyCreate command
 var assemblyCreateCmd = &cobra.Command{
-	Use:     "create ASSEMBLY",
+	Use:     "create ASSEMBLY...",
 	Aliases: []string{"add"},
-	Short:   "Create an assembly in the database",
-	Args:    cobra.ExactArgs(1),
+	Short:   "Create assemblies in the database",
+	Args:    cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var assemblies []types.Assembly
 
@@ -45,17 +46,20 @@ var assemblyCreateCmd = &cobra.Command{
 			}
 		}
 
-		currentAssembly, err := json.Marshal(assemblies[0])
-		if err != nil {
-			log.Fatal(err)
-		}
+		for _, assembly := range assemblies {
 
-		result, err := api.CallWithData(api.POST, "/v1/assembly", currentAssembly)
-		if err != nil {
-			log.Fatal(err)
-		}
+			currentAssembly, err := json.Marshal(assembly)
+			if err != nil {
+				log.Fatal(err)
+			}
 
-		fmt.Println(result)
+			result, err := api.CallWithData(http.MethodPost, "/v1/assembly", currentAssembly)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fmt.Println(result)
+		}
 	},
 }
 

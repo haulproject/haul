@@ -1,11 +1,12 @@
 /*
-*/
+ */
 package cmd
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"codeberg.org/haulproject/haul/api"
@@ -15,10 +16,10 @@ import (
 
 // kitCreateCmd represents the kitCreate command
 var kitCreateCmd = &cobra.Command{
-	Use:     "create KIT",
+	Use:     "create KIT...",
 	Aliases: []string{"add"},
-	Short:   "Create a kit in the database",
-	Args:    cobra.ExactArgs(1),
+	Short:   "Create kits in the database",
+	Args:    cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var kits []types.Kit
 
@@ -45,17 +46,20 @@ var kitCreateCmd = &cobra.Command{
 			}
 		}
 
-		currentKit, err := json.Marshal(kits[0])
-		if err != nil {
-			log.Fatal(err)
-		}
+		for _, kit := range kits {
 
-		result, err := api.CallWithData(api.POST, "/v1/kit", currentKit)
-		if err != nil {
-			log.Fatal(err)
-		}
+			currentKit, err := json.Marshal(kit)
+			if err != nil {
+				log.Fatal(err)
+			}
 
-		fmt.Println(result)
+			result, err := api.CallWithData(http.MethodPost, "/v1/kit", currentKit)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fmt.Println(result)
+		}
 	},
 }
 

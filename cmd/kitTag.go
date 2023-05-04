@@ -13,11 +13,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// componentTagCmd represents the componentTag command
-var componentTagCmd = &cobra.Command{
+// kitTagCmd represents the kitTag command
+var kitTagCmd = &cobra.Command{
 	Use:     "tags ID",
-	Aliases: []string{"tag"},
-	Short:   "Access and edit tags for a component",
+	Aliases: []string{"t", "tag"},
+	Short:   "Access and edit tags for a kit",
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
@@ -34,7 +34,7 @@ var componentTagCmd = &cobra.Command{
 			// Clear tags
 			log.Println("Clearing tags")
 
-			result, err := api.Call(http.MethodDelete, fmt.Sprintf("/v1/component/%s/tags", args[0]))
+			result, err := api.Call(http.MethodDelete, fmt.Sprintf("/v1/kit/%s/tags", args[0]))
 			if err != nil {
 				log.Fatalf("api.CallWithData: %s\n", err)
 			}
@@ -51,7 +51,7 @@ var componentTagCmd = &cobra.Command{
 				log.Fatalf("json.Marshal: %s", err)
 			}
 
-			result, err := api.CallWithData(http.MethodPost, fmt.Sprintf("/v1/component/%s/tags/remove", args[0]), data)
+			result, err := api.CallWithData(http.MethodPost, fmt.Sprintf("/v1/kit/%s/tags/remove", args[0]), data)
 			if err != nil {
 				log.Fatalf("api.Call: %s\n", err)
 			}
@@ -67,7 +67,7 @@ var componentTagCmd = &cobra.Command{
 				log.Fatalf("json.Marshal: %s", err)
 			}
 
-			result, err := api.CallWithData(http.MethodPost, fmt.Sprintf("/v1/component/%s/tags/add", args[0]), data)
+			result, err := api.CallWithData(http.MethodPost, fmt.Sprintf("/v1/kit/%s/tags/add", args[0]), data)
 			if err != nil {
 				log.Fatalf("api.Call: %s\n", err)
 			}
@@ -77,7 +77,7 @@ var componentTagCmd = &cobra.Command{
 		}
 
 		// Show tags
-		result, err := api.Call(http.MethodGet, fmt.Sprintf("/v1/component/%s/tags", args[0]))
+		result, err := api.Call(http.MethodGet, fmt.Sprintf("/v1/kit/%s/tags", args[0]))
 		if err != nil {
 			log.Fatalf("api.Call: %s\n", err)
 		}
@@ -102,11 +102,11 @@ var componentTagCmd = &cobra.Command{
 }
 
 func init() {
-	componentCmd.AddCommand(componentTagCmd)
+	kitCmd.AddCommand(kitTagCmd)
 
-	componentTagCmd.Flags().Bool("clear", false, "If set, will delete all tags in this object")
-	componentTagCmd.Flags().StringSlice("add", nil, "List of tags to add")
-	componentTagCmd.Flags().StringSlice("remove", nil, "List of tags to remove")
+	kitTagCmd.Flags().Bool("clear", false, "If set, will delete all tags in this object")
+	kitTagCmd.Flags().StringSlice("add", nil, "List of tags to add")
+	kitTagCmd.Flags().StringSlice("remove", nil, "List of tags to remove")
 
-	componentTagCmd.MarkFlagsMutuallyExclusive("clear", "add", "remove")
+	kitTagCmd.MarkFlagsMutuallyExclusive("clear", "add", "remove")
 }

@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"codeberg.org/haulproject/haul/api"
 	"github.com/spf13/cobra"
@@ -13,7 +14,7 @@ var apiCmd = &cobra.Command{
 	Use:   "api",
 	Short: "Obtain the api routes on the haul instance",
 	Run: func(cmd *cobra.Command, args []string) {
-		result, err := api.Call(api.GET, "/v1")
+		result, err := api.Call(http.MethodGet, "/v1")
 		if err != nil {
 			log.Fatal(err)
 		}
