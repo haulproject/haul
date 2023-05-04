@@ -78,6 +78,75 @@ func Call(method, route string) ([]byte, error) {
 	return nil, errors.New(fmt.Sprintf("method must be 'GET' or 'DELETE', got '%s'", method))
 }
 
+// CallWithDataB takes data and returns a []byte representing a response body.
+// Can be used for POST or PUT methods
+func CallWithDataB(method, route string, data []byte) ([]byte, error) {
+	endpoint := fmt.Sprintf("%s://%s:%d",
+		viper.GetString("api.protocol"),
+		viper.GetString("api.host"),
+		viper.GetInt("api.port"),
+	)
+	request := fmt.Sprintf("%s%s", endpoint, route)
+	switch method {
+	case http.MethodPost:
+		// initialize http client
+		client := &http.Client{}
+
+		// set the HTTP method, url, and request body
+		req, err := http.NewRequest(http.MethodPost, request, bytes.NewBuffer(data))
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", viper.GetString("api.key")))
+
+		// set the request header Content-Type for json
+		req.Header.Set("Content-Type", "application/json; charset=utf-8")
+		resp, err := client.Do(req)
+		if err != nil {
+			return nil, err
+		}
+
+		defer resp.Body.Close()
+
+		// Read Response Body
+		respBody, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+		return respBody, nil
+	case http.MethodPut:
+		// initialize http client
+		client := &http.Client{}
+
+		// set the HTTP method, url, and request body
+		req, err := http.NewRequest(http.MethodPut, request, bytes.NewBuffer(data))
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", viper.GetString("api.key")))
+
+		// set the request header Content-Type for json
+		req.Header.Set("Content-Type", "application/json; charset=utf-8")
+		resp, err := client.Do(req)
+		if err != nil {
+			return nil, err
+		}
+
+		defer resp.Body.Close()
+
+		// Read Response Body
+		respBody, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+		return respBody, nil
+	}
+
+	return nil, errors.New(fmt.Sprintf("method must be 'POST' or 'PUT', got '%s'", method))
+}
+
 // CallWithData takes data and returns a string representing a response body.
 // Can be used for POST or PUT methods
 func CallWithData(method, route string, data []byte) (string, error) {
