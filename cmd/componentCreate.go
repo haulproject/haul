@@ -16,10 +16,12 @@ import (
 
 // componentCreateCmd represents the componentCreate command
 var componentCreateCmd = &cobra.Command{
-	Use:     "create COMPONENT",
+	Use:     "create COMPONENT...",
 	Aliases: []string{"add"},
-	Short:   "Create a component in the database",
+	Short:   "Create components in the database",
 	Long: `Create a component in the database, using the COMPONENT defined in args in JSON format.
+
+	Multiple components can be created by giving splitting them as individual arguments.
 
 The "name" field must be non-blank, but its value can be any string. Examples of "name" include a description of the component, or something like a serial number, mac address, or other identifier. It currently does not need to be unique in the database.
 
@@ -32,7 +34,7 @@ The "tags" field is non-mandatory. It can however be used to convey more detaile
 Create a new set of speakers without any tags
 
     $ haul component create '{ "name": "Speakers" }'`,
-	Args: cobra.ExactArgs(1),
+	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var components []types.Component
 
@@ -59,17 +61,20 @@ Create a new set of speakers without any tags
 			}
 		}
 
-		currentComponent, err := json.Marshal(components[0])
-		if err != nil {
-			log.Fatal(err)
-		}
+		for _, component := range components {
 
-		result, err := api.CallWithData(http.MethodPost, "/v1/component", currentComponent)
-		if err != nil {
-			log.Fatal(err)
-		}
+			currentComponent, err := json.Marshal(component)
+			if err != nil {
+				log.Fatal(err)
+			}
 
-		fmt.Println(result)
+			result, err := api.CallWithData(http.MethodPost, "/v1/component", currentComponent)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fmt.Println(result)
+		}
 	},
 }
 
