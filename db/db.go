@@ -1,4 +1,5 @@
-/* Package db implements database operations for the haul server.
+/*
+	Package db implements database operations for the haul server.
 
 The database used is mongodb.
 */
@@ -87,6 +88,48 @@ func CreateComponent(component types.Component) (*mongo.InsertOneResult, error) 
 	return result, nil
 }
 
+func CreateComponents(components types.Components) (*mongo.InsertManyResult, error) {
+	mongoUri := viper.GetString("mongo.uri")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Use the SetServerAPIOptions() method to set the Stable API version to 1
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI(mongoUri).SetServerAPIOptions(serverAPI)
+
+	// Create a new client and connect to the server
+	client, err := mongo.Connect(ctx, opts)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			fmt.Fprintf(os.Stderr, "%s\n", err)
+		}
+	}()
+
+	coll := client.Database("haul").Collection("components")
+
+	for _, component := range components.Components {
+		if component.Name == "" {
+			return nil, errors.New("component.Name cannot be empty")
+		}
+	}
+	data := make([]interface{}, len(components.Components))
+	for i := range components.Components {
+		data[i] = components.Components[i]
+	}
+
+	result, err := coll.InsertMany(ctx, data)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
 func CreateAssembly(assembly types.Assembly) (*mongo.InsertOneResult, error) {
 	mongoUri := viper.GetString("mongo.uri")
 
@@ -122,6 +165,47 @@ func CreateAssembly(assembly types.Assembly) (*mongo.InsertOneResult, error) {
 	return result, nil
 }
 
+func CreateAssemblies(assemblies types.Assemblies) (*mongo.InsertManyResult, error) {
+	mongoUri := viper.GetString("mongo.uri")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Use the SetServerAPIOptions() method to set the Stable API version to 1
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI(mongoUri).SetServerAPIOptions(serverAPI)
+
+	// Create a new client and connect to the server
+	client, err := mongo.Connect(ctx, opts)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			fmt.Fprintf(os.Stderr, "%s\n", err)
+		}
+	}()
+
+	coll := client.Database("haul").Collection("assemblies")
+
+	for _, assembly := range assemblies.Assemblies {
+		if assembly.Name == "" {
+			return nil, errors.New("assembly.Name cannot be empty")
+		}
+	}
+	data := make([]interface{}, len(assemblies.Assemblies))
+	for i := range assemblies.Assemblies {
+		data[i] = assemblies.Assemblies[i]
+	}
+
+	result, err := coll.InsertMany(ctx, data)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
 func CreateKit(kit types.Kit) (*mongo.InsertOneResult, error) {
 	mongoUri := viper.GetString("mongo.uri")
 
@@ -150,6 +234,48 @@ func CreateKit(kit types.Kit) (*mongo.InsertOneResult, error) {
 	}
 
 	result, err := coll.InsertOne(context.TODO(), kit)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func CreateKits(kits types.Kits) (*mongo.InsertManyResult, error) {
+	mongoUri := viper.GetString("mongo.uri")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Use the SetServerAPIOptions() method to set the Stable API version to 1
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI(mongoUri).SetServerAPIOptions(serverAPI)
+
+	// Create a new client and connect to the server
+	client, err := mongo.Connect(ctx, opts)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			fmt.Fprintf(os.Stderr, "%s\n", err)
+		}
+	}()
+
+	coll := client.Database("haul").Collection("kits")
+
+	for _, kit := range kits.Kits {
+		if kit.Name == "" {
+			return nil, errors.New("kit.Name cannot be empty")
+		}
+	}
+	data := make([]interface{}, len(kits.Kits))
+	for i := range kits.Kits {
+		data[i] = kits.Kits[i]
+	}
+
+	result, err := coll.InsertMany(ctx, data)
 	if err != nil {
 		return nil, err
 	}

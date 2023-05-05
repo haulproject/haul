@@ -4,12 +4,12 @@ package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	"codeberg.org/haulproject/haul/api"
+	"codeberg.org/haulproject/haul/cli"
 	"codeberg.org/haulproject/haul/types"
 	"github.com/spf13/cobra"
 )
@@ -21,44 +21,56 @@ var assemblyCreateCmd = &cobra.Command{
 	Short:   "Create assemblies in the database",
 	Args:    cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		var assemblies []types.Assembly
+		var assemblies types.Assemblies
 
 		for _, arg := range args {
 			var assembly types.Assembly
 
 			err := json.Unmarshal([]byte(arg), &assembly)
 			if err != nil {
-				log.Println(err)
-				continue
+				log.Fatalf(`Bad argument: %s
+
+%s`, arg, err)
 			}
 
-			assemblies = append(assemblies, assembly)
+			assemblies.Assemblies = append(assemblies.Assemblies, assembly)
 
 		}
 
-		if len(assemblies) == 0 {
+		if len(assemblies.Assemblies) == 0 {
 			os.Exit(1)
 		}
 
-		for _, assembly := range assemblies {
-			if assembly.Name == "" {
-				log.Fatal("assembly.Name cannot be empty")
-			}
+		assemblies_bytes, err := json.Marshal(assemblies.Assemblies)
+		if err != nil {
+			log.Fatal("json.Marshal:", err)
 		}
 
-		for _, assembly := range assemblies {
+		result, err := api.CallWithDataB(http.MethodPost, "/v1/assembly", assemblies_bytes)
+		if err != nil {
+			log.Fatal("api.CallWithDataB:", err)
+		}
 
-			currentAssembly, err := json.Marshal(assembly)
-			if err != nil {
-				log.Fatal(err)
-			}
+		// Using cli object
+		client := cli.New()
 
-			result, err := api.CallWithData(http.MethodPost, "/v1/assembly", currentAssembly)
-			if err != nil {
-				log.Fatal(err)
-			}
+		output, err := rootCmd.PersistentFlags().GetString("output")
+		if err != nil {
+			log.Fatal(err)
+		}
 
-			fmt.Println(result)
+		client.OutputStyle = output
+
+		var result_object types.InsertResult
+
+		err = json.Unmarshal(result, &result_object)
+		if err != nil {
+			log.Fatal("Error unmarshalling POST /v1/assembly:", err, "\n")
+		}
+
+		err = client.OutputObject(result_object)
+		if err != nil {
+			log.Fatal("Error outputting object:", err)
 		}
 	},
 }

@@ -4,12 +4,12 @@ package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	"codeberg.org/haulproject/haul/api"
+	"codeberg.org/haulproject/haul/cli"
 	"codeberg.org/haulproject/haul/types"
 	"github.com/spf13/cobra"
 )
@@ -36,44 +36,56 @@ Create a new set of speakers without any tags
     $ haul component create '{ "name": "Speakers" }'`,
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		var components []types.Component
+		var components types.Components
 
 		for _, arg := range args {
 			var component types.Component
 
 			err := json.Unmarshal([]byte(arg), &component)
 			if err != nil {
-				log.Println(err)
-				continue
+				log.Fatalf(`Bad argument: %s
+
+%s`, arg, err)
 			}
 
-			components = append(components, component)
+			components.Components = append(components.Components, component)
 
 		}
 
-		if len(components) == 0 {
+		if len(components.Components) == 0 {
 			os.Exit(1)
 		}
 
-		for _, component := range components {
-			if component.Name == "" {
-				log.Fatal("component.Name cannot be empty")
-			}
+		components_bytes, err := json.Marshal(components.Components)
+		if err != nil {
+			log.Fatal("json.Marshal:", err)
 		}
 
-		for _, component := range components {
+		result, err := api.CallWithDataB(http.MethodPost, "/v1/component", components_bytes)
+		if err != nil {
+			log.Fatal("api.CallWithDataB:", err)
+		}
 
-			currentComponent, err := json.Marshal(component)
-			if err != nil {
-				log.Fatal(err)
-			}
+		// Using cli object
+		client := cli.New()
 
-			result, err := api.CallWithData(http.MethodPost, "/v1/component", currentComponent)
-			if err != nil {
-				log.Fatal(err)
-			}
+		output, err := rootCmd.PersistentFlags().GetString("output")
+		if err != nil {
+			log.Fatal(err)
+		}
 
-			fmt.Println(result)
+		client.OutputStyle = output
+
+		var result_object types.InsertResult
+
+		err = json.Unmarshal(result, &result_object)
+		if err != nil {
+			log.Fatal("Error unmarshalling POST /v1/component:", err, "\n")
+		}
+
+		err = client.OutputObject(result_object)
+		if err != nil {
+			log.Fatal("Error outputting object:", err)
 		}
 	},
 }

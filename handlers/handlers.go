@@ -52,84 +52,102 @@ func HandleV1Healthcheck(c echo.Context) error {
 // Create
 
 func HandleV1ComponentCreate(c echo.Context) error {
-	var component types.Component
-	err := c.Bind(&component)
+	var components types.Components
+
+	err := c.Bind(&components.Components)
 	if err != nil {
-		log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			"message": "Bad request",
+			"message": "error",
+			"error":   err.Error(),
 		})
 	}
 
-	result, err := db.CreateComponent(component)
+	result, err := db.CreateComponents(components)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
+			"message": "Error during db.CreateComponents",
+			"error":   err.Error(),
 		})
 	}
 
-	message := fmt.Sprintf("Inserted document with _id: %v", result.InsertedID)
+	if len(result.InsertedIDs) == 0 {
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message":      "Nothing to do",
+			"inserted_ids": result.InsertedIDs,
+		})
 
-	log.Println(message)
+	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"message": message,
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":      "Created components",
+		"inserted_ids": result.InsertedIDs,
 	})
-
 }
 
 func HandleV1AssemblyCreate(c echo.Context) error {
-	var assembly types.Assembly
-	err := c.Bind(&assembly)
+	var assemblies types.Assemblies
+
+	err := c.Bind(&assemblies.Assemblies)
 	if err != nil {
-		log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			"message": "Bad request",
+			"message": "error",
+			"error":   err.Error(),
 		})
 	}
 
-	result, err := db.CreateAssembly(assembly)
+	result, err := db.CreateAssemblies(assemblies)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
+			"message": "Error during db.CreateAssemblies",
+			"error":   err.Error(),
 		})
 	}
 
-	message := fmt.Sprintf("Inserted assembly with _id: %s", result.InsertedID)
+	if len(result.InsertedIDs) == 0 {
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message":      "Nothing to do",
+			"inserted_ids": result.InsertedIDs,
+		})
 
-	log.Println(message)
+	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"message": message,
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":      "Created assemblies",
+		"inserted_ids": result.InsertedIDs,
 	})
-
 }
 
 func HandleV1KitCreate(c echo.Context) error {
-	var kit types.Kit
-	err := c.Bind(&kit)
+	var kits types.Kits
+
+	err := c.Bind(&kits.Kits)
 	if err != nil {
-		log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			"message": "Bad request",
+			"message": "error",
+			"error":   err.Error(),
 		})
 	}
 
-	result, err := db.CreateKit(kit)
+	result, err := db.CreateKits(kits)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
+			"message": "Error during db.CreateKits",
+			"error":   err.Error(),
 		})
 	}
 
-	message := fmt.Sprintf("Inserted document with _id: %s", result.InsertedID)
+	if len(result.InsertedIDs) == 0 {
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message":      "Nothing to do",
+			"inserted_ids": result.InsertedIDs,
+		})
 
-	log.Println(message)
+	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"message": message,
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":      "Created kits",
+		"inserted_ids": result.InsertedIDs,
 	})
-
 }
 
 // Read
