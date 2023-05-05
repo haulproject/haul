@@ -4,12 +4,12 @@ package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	"codeberg.org/haulproject/haul/api"
+	"codeberg.org/haulproject/haul/cli"
 	"codeberg.org/haulproject/haul/types"
 	"github.com/spf13/cobra"
 )
@@ -21,44 +21,55 @@ var kitCreateCmd = &cobra.Command{
 	Short:   "Create kits in the database",
 	Args:    cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		var kits []types.Kit
+		var kits types.Kits
 
 		for _, arg := range args {
 			var kit types.Kit
 
 			err := json.Unmarshal([]byte(arg), &kit)
 			if err != nil {
-				log.Println(err)
-				continue
+				// I believe it should crash if one of the args is bad
+				log.Fatal("json.Unmarshal:", err)
 			}
 
-			kits = append(kits, kit)
+			kits.Kits = append(kits.Kits, kit)
 
 		}
 
-		if len(kits) == 0 {
+		if len(kits.Kits) == 0 {
 			os.Exit(1)
 		}
 
-		for _, kit := range kits {
-			if kit.Name == "" {
-				log.Fatal("kit.Name cannot be empty")
-			}
+		kits_bytes, err := json.Marshal(kits.Kits)
+		if err != nil {
+			log.Fatal("json.Marshal:", err)
 		}
 
-		for _, kit := range kits {
+		result, err := api.CallWithDataB(http.MethodPost, "/v1/kit", kits_bytes)
+		if err != nil {
+			log.Fatal("api.CallWithDataB:", err)
+		}
 
-			currentKit, err := json.Marshal(kit)
-			if err != nil {
-				log.Fatal(err)
-			}
+		// Using cli object
+		client := cli.New()
 
-			result, err := api.CallWithData(http.MethodPost, "/v1/kit", currentKit)
-			if err != nil {
-				log.Fatal(err)
-			}
+		output, err := rootCmd.PersistentFlags().GetString("output")
+		if err != nil {
+			log.Fatal(err)
+		}
 
-			fmt.Println(result)
+		client.OutputStyle = output
+
+		var result_object types.InsertResult
+
+		err = json.Unmarshal(result, &result_object)
+		if err != nil {
+			log.Fatal("Error unmarshalling POST /v1/kit:", err, "\n")
+		}
+
+		err = client.OutputObject(result_object)
+		if err != nil {
+			log.Fatal("Error outputting object:", err)
 		}
 	},
 }
