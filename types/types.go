@@ -86,7 +86,12 @@ func (c *Component) TabbyPrint() error {
 		return err
 	}
 
-	t.AddLine(c.Name, string(tags), c.Status, c.Target)
+	targetid, err := json.Marshal(c.Target)
+	if err != nil {
+		return err
+	}
+
+	t.AddLine(c.Name, string(tags), c.Status, string(targetid))
 
 	t.Print()
 	return nil
@@ -102,7 +107,17 @@ func (c *ComponentWithID) TabbyPrint() error {
 		return err
 	}
 
-	t.AddLine(c.ID, c.Name, string(tags), c.Status, c.Target)
+	objectid, err := json.Marshal(c.ID)
+	if err != nil {
+		return err
+	}
+
+	targetid, err := json.Marshal(c.Target)
+	if err != nil {
+		return err
+	}
+
+	t.AddLine(string(objectid), c.Name, string(tags), c.Status, string(targetid))
 
 	t.Print()
 	return nil
@@ -119,7 +134,12 @@ func (c *Components) TabbyPrint() error {
 			return err
 		}
 
-		t.AddLine(component.Name, string(tags), component.Status, component.Target)
+		targetid, err := json.Marshal(component.Target)
+		if err != nil {
+			return err
+		}
+
+		t.AddLine(component.Name, string(tags), component.Status, string(targetid))
 	}
 
 	t.Print()
@@ -137,7 +157,17 @@ func (c *ComponentsWithID) TabbyPrint() error {
 			return err
 		}
 
-		t.AddLine(component.ID, component.Name, string(tags), component.Status, component.Target)
+		objectid, err := json.Marshal(component.ID)
+		if err != nil {
+			return err
+		}
+
+		targetid, err := json.Marshal(component.Target)
+		if err != nil {
+			return err
+		}
+
+		t.AddLine(string(objectid), component.Name, string(tags), component.Status, string(targetid))
 	}
 
 	t.Print()
@@ -154,7 +184,12 @@ func (a *Assembly) TabbyPrint() error {
 		return err
 	}
 
-	t.AddLine(a.Name, string(tags), a.Status, a.Target)
+	targetid, err := json.Marshal(a.Target)
+	if err != nil {
+		return err
+	}
+
+	t.AddLine(a.Name, string(tags), a.Status, string(targetid))
 
 	t.Print()
 	return nil
@@ -170,7 +205,17 @@ func (a *AssemblyWithID) TabbyPrint() error {
 		return err
 	}
 
-	t.AddLine(a.ID, a.Name, string(tags), a.Status, a.Target)
+	objectid, err := json.Marshal(a.ID)
+	if err != nil {
+		return err
+	}
+
+	targetid, err := json.Marshal(a.Target)
+	if err != nil {
+		return err
+	}
+
+	t.AddLine(string(objectid), a.Name, string(tags), a.Status, string(targetid))
 
 	t.Print()
 	return nil
@@ -187,7 +232,12 @@ func (a *Assemblies) TabbyPrint() error {
 			return err
 		}
 
-		t.AddLine(assembly.Name, string(tags), assembly.Status, assembly.Target)
+		targetid, err := json.Marshal(assembly.Target)
+		if err != nil {
+			return err
+		}
+
+		t.AddLine(assembly.Name, string(tags), assembly.Status, string(targetid))
 	}
 
 	t.Print()
@@ -205,7 +255,17 @@ func (a *AssembliesWithID) TabbyPrint() error {
 			return err
 		}
 
-		t.AddLine(assembly.ID, assembly.Name, string(tags), assembly.Status, assembly.Target)
+		objectid, err := json.Marshal(assembly.ID)
+		if err != nil {
+			return err
+		}
+
+		targetid, err := json.Marshal(assembly.Target)
+		if err != nil {
+			return err
+		}
+
+		t.AddLine(string(objectid), assembly.Name, string(tags), assembly.Status, string(targetid))
 	}
 
 	t.Print()
@@ -238,7 +298,12 @@ func (k *KitWithID) TabbyPrint() error {
 		return err
 	}
 
-	t.AddLine(k.ID, k.Name, string(tags), k.Status)
+	objectid, err := json.Marshal(k.ID)
+	if err != nil {
+		return err
+	}
+
+	t.AddLine(string(objectid), k.Name, string(tags), k.Status)
 
 	t.Print()
 	return nil
@@ -273,7 +338,12 @@ func (k *KitsWithID) TabbyPrint() error {
 			return err
 		}
 
-		t.AddLine(kit.ID, kit.Name, string(tags), kit.Status)
+		objectid, err := json.Marshal(kit.ID)
+		if err != nil {
+			return err
+		}
+
+		t.AddLine(string(objectid), kit.Name, string(tags), kit.Status)
 	}
 
 	t.Print()
