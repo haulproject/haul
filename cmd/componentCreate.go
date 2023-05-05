@@ -43,8 +43,9 @@ Create a new set of speakers without any tags
 
 			err := json.Unmarshal([]byte(arg), &component)
 			if err != nil {
-				// I believe it should crash if one of the args is bad
-				log.Fatal("json.Unmarshal:", err)
+				log.Fatalf(`Bad argument: %s
+
+%s`, arg, err)
 			}
 
 			components.Components = append(components.Components, component)

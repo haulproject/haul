@@ -28,8 +28,9 @@ var assemblyCreateCmd = &cobra.Command{
 
 			err := json.Unmarshal([]byte(arg), &assembly)
 			if err != nil {
-				// I believe it should crash if one of the args is bad
-				log.Fatal("json.Unmarshal:", err)
+				log.Fatalf(`Bad argument: %s
+
+%s`, arg, err)
 			}
 
 			assemblies.Assemblies = append(assemblies.Assemblies, assembly)
