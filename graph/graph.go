@@ -80,7 +80,9 @@ func GetGraph() (*bytes.Buffer, error) {
 			return nil, err
 		}
 
-		c.SetLabel(fmt.Sprint(component.Name, "\n---\n", string(label_id)))
+		c.SetLabel(fmt.Sprintf(`%s
+		---
+		%s`, string(label_id), component.Name))
 	}
 
 	for _, assembly := range assemblies.AssembliesWithID {
@@ -96,7 +98,9 @@ func GetGraph() (*bytes.Buffer, error) {
 			return nil, err
 		}
 
-		a.SetLabel(fmt.Sprint(assembly.Name, "\n---\n", string(label_id)))
+		a.SetLabel(fmt.Sprintf(`%s
+		---
+		%s`, string(label_id), assembly.Name))
 	}
 
 	for _, kit := range kits.KitsWithID {
@@ -112,7 +116,9 @@ func GetGraph() (*bytes.Buffer, error) {
 			return nil, err
 		}
 
-		k.SetLabel(fmt.Sprint(kit.Name, "\n---\n", string(label_id)))
+		k.SetLabel(fmt.Sprintf(`%s
+		---
+		%s`, string(label_id), kit.Name))
 	}
 
 	// edges
