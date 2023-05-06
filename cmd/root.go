@@ -53,11 +53,11 @@ func init() {
 	viper.BindPFlag("api.port", rootCmd.PersistentFlags().Lookup("api-port"))
 
 	// api.key
-	//TODO
+	rootCmd.PersistentFlags().String("api-key", "", "Remote api key (config: 'api.key')")
+	viper.BindPFlag("api.key", rootCmd.PersistentFlags().Lookup("api-key"))
 
 	rootCmd.PersistentFlags().StringP("output", "o", "tabby", "Output style { tabby | json | json_pretty }")
 	viper.BindPFlag("cli.output", rootCmd.PersistentFlags().Lookup("output"))
-	//rootCmd.PersistentFlags().StringP("output", "o", "json", "Output style { tabby | json | json_pretty }")
 }
 
 // initConfig reads in config file and ENV variables if set.
