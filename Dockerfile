@@ -18,6 +18,8 @@ ADD db/ db/
 
 ADD handlers/ handlers/
 
+ADD graph/ graph/
+
 RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o haul .
 
 # Alpine
