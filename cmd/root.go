@@ -58,7 +58,6 @@ func init() {
 
 	rootCmd.PersistentFlags().StringP("output", "o", "tabby", "Output style { tabby | json | json_pretty }")
 	viper.BindPFlag("cli.output", rootCmd.PersistentFlags().Lookup("output"))
-	//rootCmd.PersistentFlags().StringP("output", "o", "json", "Output style { tabby | json | json_pretty }")
 }
 
 // initConfig reads in config file and ENV variables if set.
