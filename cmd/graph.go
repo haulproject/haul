@@ -92,7 +92,12 @@ var graphCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 
-			_ = c
+			label_id, err := component.ID.MarshalText()
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			c.SetLabel(fmt.Sprint(component.Name, "\n---\n", string(label_id)))
 		}
 
 		for _, assembly := range assemblies.AssembliesWithID {
@@ -102,6 +107,13 @@ var graphCmd = &cobra.Command{
 			}
 
 			a.SetShape(cgraph.BoxShape)
+
+			label_id, err := assembly.ID.MarshalText()
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			a.SetLabel(fmt.Sprint(assembly.Name, "\n---\n", string(label_id)))
 		}
 
 		for _, kit := range kits.KitsWithID {
@@ -111,6 +123,13 @@ var graphCmd = &cobra.Command{
 			}
 
 			k.SetShape(cgraph.DiamondShape)
+
+			label_id, err := kit.ID.MarshalText()
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			k.SetLabel(fmt.Sprint(kit.Name, "\n---\n", string(label_id)))
 		}
 
 		// edges
