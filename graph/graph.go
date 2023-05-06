@@ -80,11 +80,21 @@ func GetGraph() (*bytes.Buffer, error) {
 			return nil, err
 		}
 
+		status, err := json.Marshal(component.Status)
+		if err != nil {
+			return nil, err
+		}
+
+		tags, err := json.Marshal(component.Tags)
+		if err != nil {
+			return nil, err
+		}
+
 		c.SetLabel(fmt.Sprintf(`%s
 		---
 		Name: %s
 		Status: %s
-		Tags: %s`, string(label_id), component.Name, component.Status, component.Tags))
+		Tags: %s`, string(label_id), component.Name, string(status), string(tags)))
 	}
 
 	for _, assembly := range assemblies.AssembliesWithID {
@@ -100,11 +110,21 @@ func GetGraph() (*bytes.Buffer, error) {
 			return nil, err
 		}
 
+		status, err := json.Marshal(assembly.Status)
+		if err != nil {
+			return nil, err
+		}
+
+		tags, err := json.Marshal(assembly.Tags)
+		if err != nil {
+			return nil, err
+		}
+
 		a.SetLabel(fmt.Sprintf(`%s
 		---
 		Name: %s
 		Status: %s
-		Tags: %s`, string(label_id), assembly.Name, assembly.Status, assembly.Tags))
+		Tags: %s`, string(label_id), assembly.Name, string(status), string(tags)))
 	}
 
 	for _, kit := range kits.KitsWithID {
@@ -120,11 +140,21 @@ func GetGraph() (*bytes.Buffer, error) {
 			return nil, err
 		}
 
+		status, err := json.Marshal(kit.Status)
+		if err != nil {
+			return nil, err
+		}
+
+		tags, err := json.Marshal(kit.Tags)
+		if err != nil {
+			return nil, err
+		}
+
 		k.SetLabel(fmt.Sprintf(`%s
 		---
 		Name: %s
 		Status: %s
-		Tags: %s`, string(label_id), kit.Name, kit.Status, kit.Tags))
+		Tags: %s`, string(label_id), kit.Name, string(status), string(tags)))
 	}
 
 	// edges
