@@ -80,7 +80,7 @@ func CreateComponent(component types.Component) (*mongo.InsertOneResult, error) 
 		return nil, errors.New("component.Name cannot be empty")
 	}
 
-	result, err := coll.InsertOne(context.TODO(), component)
+	result, err := coll.InsertOne(ctx, component)
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +157,7 @@ func CreateAssembly(assembly types.Assembly) (*mongo.InsertOneResult, error) {
 		return nil, errors.New("assembly.Name cannot be empty")
 	}
 
-	result, err := coll.InsertOne(context.TODO(), assembly)
+	result, err := coll.InsertOne(ctx, assembly)
 	if err != nil {
 		return nil, err
 	}
@@ -233,7 +233,7 @@ func CreateKit(kit types.Kit) (*mongo.InsertOneResult, error) {
 		return nil, errors.New("kit.Name cannot be empty")
 	}
 
-	result, err := coll.InsertOne(context.TODO(), kit)
+	result, err := coll.InsertOne(ctx, kit)
 	if err != nil {
 		return nil, err
 	}
