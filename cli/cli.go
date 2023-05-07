@@ -45,6 +45,8 @@ func (c *Client) OutputObject(tabby_printer types.TabbyPrinter) error {
 		fmt.Println(string(message))
 	case OutputStyleTabby:
 		tabby_printer.TabbyPrint()
+	default:
+		return fmt.Errorf("Unknown output style %s", c.OutputStyle)
 	}
 
 	return nil
