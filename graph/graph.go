@@ -13,7 +13,7 @@ import (
 	"github.com/goccy/go-graphviz/cgraph"
 )
 
-func GetGraph() (*bytes.Buffer, error) {
+func GetGraph(format graphviz.Format) (*bytes.Buffer, error) {
 	var (
 		components types.ComponentsWithID
 		assemblies types.AssembliesWithID
@@ -202,8 +202,9 @@ func GetGraph() (*bytes.Buffer, error) {
 	}
 
 	var buf bytes.Buffer
-	if err := g.Render(graph, "dot", &buf); err != nil {
+	if err := g.Render(graph, format, &buf); err != nil {
 		return nil, err
 	}
+
 	return &buf, nil
 }
