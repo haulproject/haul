@@ -27,12 +27,28 @@ var graphCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		filepath, err := cmd.Flags().GetString("file")
+		if err != nil {
+			log.Fatal("Error:", err)
+		}
+
 		buf, err := graph.GetGraph(graphviz.Format(format))
 		if err != nil {
 			log.Fatal("Error:", err)
 		}
 
-		fmt.Println(buf.String())
+		if filepath == "" {
+			fmt.Println(buf.String())
+			os.Exit(0)
+		}
+
+		file, err := os.Open(filepath)
+		if err != nil {
+			log.Fatal("Error:", err)
+		}
+		defer file.Close()
+
+		file.Write(buf.Bytes())
 	},
 }
 
@@ -40,4 +56,6 @@ func init() {
 	rootCmd.AddCommand(graphCmd)
 
 	graphCmd.Flags().String("format", "dot", "Graph output format")
+
+	graphCmd.Flags().String("file", "", "File to output graph data to. Leave empty for stdout")
 }
