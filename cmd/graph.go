@@ -94,7 +94,7 @@ or, with default settings:
 			os.Exit(0)
 		}
 
-		file, err := os.Open(filepath)
+		file, err := os.Create(filepath)
 		if err != nil {
 			log.Fatal("Error:", err)
 		}
