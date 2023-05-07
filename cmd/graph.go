@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"codeberg.org/haulproject/haul/graph"
+	"github.com/goccy/go-graphviz"
 	"github.com/spf13/cobra"
 )
 
@@ -20,28 +21,23 @@ var graphCmd = &cobra.Command{
 			log.Fatal("Error:", err)
 		}
 
-		switch format {
-		case "plain", "plain-text":
-			buf, err := graph.GetGraph()
-			if err != nil {
-				log.Fatal("Error:", err)
-			}
-
-			fmt.Println(buf.String())
-		case "":
+		if format == "" {
 			io.WriteString(os.Stderr, "Error: No graph output format selected.\n\n")
 			cmd.Help()
 			os.Exit(1)
-		default:
-			io.WriteString(os.Stderr, fmt.Sprintf("Error: Unknown graph output format ('graph.output', '--graph-output'): %s\n", format))
-			cmd.Help()
-			os.Exit(1)
 		}
+
+		buf, err := graph.GetGraph(graphviz.Format(format))
+		if err != nil {
+			log.Fatal("Error:", err)
+		}
+
+		fmt.Println(buf.String())
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(graphCmd)
 
-	graphCmd.Flags().String("format", "plain", "Graph output format")
+	graphCmd.Flags().String("format", "dot", "Graph output format")
 }
