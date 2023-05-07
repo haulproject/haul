@@ -24,6 +24,8 @@ func New() *Client {
 	return &Client{OutputStyle: OutputStyleTabby}
 }
 
+// OutputObject prints indented or unindented json, or an ascii table (tabby)
+// (depending on *Client#OutputStyle) to stdout
 func (c *Client) OutputObject(tabby_printer types.TabbyPrinter) error {
 	switch c.OutputStyle {
 	case OutputStyleJSON:
