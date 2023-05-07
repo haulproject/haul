@@ -24,6 +24,8 @@ func New() *Client {
 	return &Client{OutputStyle: OutputStyleTabby}
 }
 
+// OutputObject prints indented or unindented json, or an ascii table (tabby)
+// (depending on *Client#OutputStyle) to stdout
 func (c *Client) OutputObject(tabby_printer types.TabbyPrinter) error {
 	switch c.OutputStyle {
 	case OutputStyleJSON:
@@ -43,11 +45,18 @@ func (c *Client) OutputObject(tabby_printer types.TabbyPrinter) error {
 		fmt.Println(string(message))
 	case OutputStyleTabby:
 		tabby_printer.TabbyPrint()
+	default:
+		return fmt.Errorf("Unknown output style %s", c.OutputStyle)
 	}
 
 	return nil
 }
 
+// Output prints indented or unindented (depending on *Client#OutputStyle)
+// json from a []byte to stdout.
+//
+// Deprecated: Does not support tabby output, please use *Client#OutputObject
+// instead for full features.
 func (c *Client) Output(message []byte) error {
 	switch c.OutputStyle {
 	case OutputStyleJSON:
@@ -62,42 +71,6 @@ func (c *Client) Output(message []byte) error {
 		_, err := fmt.Println(string(bytes_buffer.Bytes()))
 
 		return err
-
-	/*
-		case OutputStyleTabby:
-			var result interface{}
-
-			json.Unmarshal(message, &result)
-
-			fmt.Println("tabby")
-
-			//t := tabby.New()
-
-			switch result.(type) {
-			case map[string]interface{}:
-				fmt.Println("is a map[string]interface{}")
-			case []interface{}:
-				fmt.Println("is a []interface{}")
-				result_slice, ok := result.([]interface{})
-				if !ok {
-					return fmt.Errorf("Cannot type result as []interface{}")
-				}
-
-				var fields []interface{}
-
-				fmt.Println(fields)
-
-				for _, object := range result_slice[0] {
-					fmt.Println(object)
-				}
-
-			case []map[string]interface{}:
-				fmt.Println("is a []map[string]interface{}")
-			default:
-				return errors.New("Unknown type for tabby message")
-
-			}
-	*/
 	default:
 		return errors.New("Invalid OutputStyle")
 	}
