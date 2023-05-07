@@ -15,6 +15,19 @@ import (
 var graphCmd = &cobra.Command{
 	Use:   "graph",
 	Short: "Produce a graphviz graph of objects",
+	Example: `
+Export the haul graph to a file called 'graph.svg':
+
+  $ haul graph --format svg --file graph.svg
+
+Export the haul graph in dot format to stdout
+
+  $ haul graph --format dot
+
+or, with default settings:
+
+  $ haul graph
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		format, err := cmd.Flags().GetString("format")
 		if err != nil {
