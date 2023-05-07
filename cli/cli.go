@@ -52,6 +52,11 @@ func (c *Client) OutputObject(tabby_printer types.TabbyPrinter) error {
 	return nil
 }
 
+// Output prints indented or unindented (depending on *Client#OutputStyle)
+// json from a []byte to stdout.
+//
+// Deprecated: Does not support tabby output, please use *Client#OutputObject
+// instead for full features.
 func (c *Client) Output(message []byte) error {
 	switch c.OutputStyle {
 	case OutputStyleJSON:
