@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"os"
 
 	"codeberg.org/haulproject/haul/graph"
 	"github.com/spf13/cobra"
@@ -13,15 +15,33 @@ var graphCmd = &cobra.Command{
 	Use:   "graph",
 	Short: "Produce a graphviz graph of objects",
 	Run: func(cmd *cobra.Command, args []string) {
-		buf, err := graph.GetGraph()
+		format, err := cmd.Flags().GetString("format")
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("Error:", err)
 		}
 
-		fmt.Println(buf.String())
+		switch format {
+		case "plain", "plain-text":
+			buf, err := graph.GetGraph()
+			if err != nil {
+				log.Fatal("Error:", err)
+			}
+
+			fmt.Println(buf.String())
+		case "":
+			io.WriteString(os.Stderr, "Error: No graph output format selected.\n\n")
+			cmd.Help()
+			os.Exit(1)
+		default:
+			io.WriteString(os.Stderr, fmt.Sprintf("Error: Unknown graph output format ('graph.output', '--graph-output'): %s\n", format))
+			cmd.Help()
+			os.Exit(1)
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(graphCmd)
+
+	graphCmd.Flags().String("format", "plain", "Graph output format")
 }
