@@ -1,12 +1,16 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
 
+	"codeberg.org/haulproject/haul/api"
 	"codeberg.org/haulproject/haul/graph"
+	"codeberg.org/haulproject/haul/types"
 	"github.com/goccy/go-graphviz"
 	"github.com/spf13/cobra"
 )
@@ -45,7 +49,42 @@ or, with default settings:
 			log.Fatal("Error:", err)
 		}
 
-		buf, err := graph.GetGraph(graphviz.Format(format))
+		var (
+			components types.ComponentsWithID
+			assemblies types.AssembliesWithID
+			kits       types.KitsWithID
+		)
+
+		// By default, show all objects in the graph
+
+		components_bytes, err := api.Call(http.MethodGet, "/v1/component")
+		if err != nil {
+			log.Fatal("Error:", err)
+		}
+
+		if err = json.Unmarshal(components_bytes, &components.ComponentsWithID); err != nil {
+			log.Fatal("Error:", err)
+		}
+
+		assemblies_bytes, err := api.Call(http.MethodGet, "/v1/assembly")
+		if err != nil {
+			log.Fatal("Error:", err)
+		}
+
+		if err = json.Unmarshal(assemblies_bytes, &assemblies.AssembliesWithID); err != nil {
+			log.Fatal("Error:", err)
+		}
+
+		kits_bytes, err := api.Call(http.MethodGet, "/v1/kit")
+		if err != nil {
+			log.Fatal("Error:", err)
+		}
+
+		if err = json.Unmarshal(kits_bytes, &kits.KitsWithID); err != nil {
+			log.Fatal("Error:", err)
+		}
+
+		buf, err := graph.GetGraph(graphviz.Format(format), components, assemblies, kits)
 		if err != nil {
 			log.Fatal("Error:", err)
 		}

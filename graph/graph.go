@@ -5,51 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 
-	"codeberg.org/haulproject/haul/api"
 	"codeberg.org/haulproject/haul/types"
 	"github.com/goccy/go-graphviz"
 	"github.com/goccy/go-graphviz/cgraph"
 )
 
-func GetGraph(format graphviz.Format) (*bytes.Buffer, error) {
-	var (
-		components types.ComponentsWithID
-		assemblies types.AssembliesWithID
-		kits       types.KitsWithID
-	)
-
-	// By default, show all objects in the graph
-
-	components_bytes, err := api.Call(http.MethodGet, "/v1/component")
-	if err != nil {
-		return nil, err
-	}
-
-	if err = json.Unmarshal(components_bytes, &components.ComponentsWithID); err != nil {
-		return nil, err
-	}
-
-	assemblies_bytes, err := api.Call(http.MethodGet, "/v1/assembly")
-	if err != nil {
-		return nil, err
-	}
-
-	if err = json.Unmarshal(assemblies_bytes, &assemblies.AssembliesWithID); err != nil {
-		return nil, err
-	}
-
-	kits_bytes, err := api.Call(http.MethodGet, "/v1/kit")
-	if err != nil {
-		return nil, err
-	}
-
-	if err = json.Unmarshal(kits_bytes, &kits.KitsWithID); err != nil {
-		return nil, err
-	}
-
-	//TODO api calls
+func GetGraph(format graphviz.Format, components types.ComponentsWithID, assemblies types.AssembliesWithID, kits types.KitsWithID) (*bytes.Buffer, error) {
 	g := graphviz.New()
 
 	graph, err := g.Graph()
