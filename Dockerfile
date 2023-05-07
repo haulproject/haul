@@ -20,13 +20,12 @@ ADD handlers/ handlers/
 
 ADD graph/ graph/
 
-RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o haul .
+#RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o haul .
+RUN go build -a -installsuffix cgo -o haul .
 
-# Alpine
+# Debian
 
-FROM alpine:3.17.2
-
-RUN apk update && apk add file --no-cache && apk upgrade --no-cache
+FROM debian:stable-20230502
 
 WORKDIR /app
 
